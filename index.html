@@ -1,0 +1,1983 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>四週精力維持計畫 · 執行台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230f8f70%22/%3E%3Cpath d=%22M17.5 5 8 18h6l-1.5 9L22 14h-6z%22 fill=%22%23f2ab2e%22/%3E%3C/svg%3E">
+<style>
+:root{
+  --paper:#f6f8f7; --card:#ffffff; --ink:#10252c; --muted:#5e6f73; --faint:#8b9a9d;
+  --line:#d8e0dc; --line-soft:#e8eeeb;
+  --green:#0f8f70; --green-soft:#e6f4ef; --green-deep:#0a6b53;
+  --teal:#177f8f; --teal-soft:#e4f1f3;
+  --coral:#e25f48; --coral-soft:#fcebe8;
+  --amber:#f2ab2e; --amber-soft:#fdf3e0;
+  --shadow:0 1px 2px rgba(16,37,44,.05), 0 4px 16px rgba(16,37,44,.05);
+  --shadow-lift:0 2px 6px rgba(16,37,44,.07), 0 12px 32px rgba(16,37,44,.09);
+  --r:14px; --r-sm:9px;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono","Consolas",monospace;
+  --sans:"Noto Sans TC","Microsoft JhengHei","PingFang TC",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1618; --card:#152125; --ink:#e8f0ee; --muted:#9db0b2; --faint:#75898c;
+    --line:#26383d; --line-soft:#1d2c30;
+    --green:#3cb894; --green-soft:#12302a; --green-deep:#5fd0ad;
+    --teal:#49aebd; --teal-soft:#122b31;
+    --coral:#f07d67; --coral-soft:#331c19;
+    --amber:#f5bb56; --amber-soft:#332715;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.28);
+    --shadow-lift:0 2px 6px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1618; --card:#152125; --ink:#e8f0ee; --muted:#9db0b2; --faint:#75898c;
+  --line:#26383d; --line-soft:#1d2c30;
+  --green:#3cb894; --green-soft:#12302a; --green-deep:#5fd0ad;
+  --teal:#49aebd; --teal-soft:#122b31;
+  --coral:#f07d67; --coral-soft:#331c19;
+  --amber:#f5bb56; --amber-soft:#332715;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.28);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans); background:var(--paper); color:var(--ink);
+  line-height:1.65; font-size:15px; letter-spacing:.01em;
+  padding-bottom:env(safe-area-inset-bottom);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.3;font-weight:700;letter-spacing:-.005em}
+a{color:var(--teal)}
+button,input,select,textarea{font:inherit;color:inherit}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+header.top{
+  position:sticky;top:0;z-index:60;background:var(--paper);
+  border-bottom:1px solid var(--line);
+}
+.top-in{display:flex;align-items:center;gap:14px;padding:11px 18px;max-width:1080px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand .mark{width:30px;height:30px;border-radius:8px;background:var(--green);display:grid;place-items:center;flex:0 0 auto}
+.brand .mark svg{width:17px;height:17px}
+.brand b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.brand small{display:block;font-size:11px;color:var(--faint);font-weight:400;line-height:1.2;letter-spacing:.04em}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.sync-dot{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);
+  padding:5px 10px;border:1px solid var(--line);border-radius:99px;background:var(--card);white-space:nowrap;cursor:pointer}
+.sync-dot i{width:7px;height:7px;border-radius:99px;background:var(--faint);flex:0 0 auto}
+.sync-dot.ok i{background:var(--green)} .sync-dot.warn i{background:var(--amber)} .sync-dot.err i{background:var(--coral)}
+.sync-dot.busy i{background:var(--teal);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--card);
+  display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.icon-btn:hover{color:var(--ink);border-color:var(--muted)}
+.icon-btn svg{width:16px;height:16px}
+
+nav.tabs{position:sticky;top:53px;z-index:55;background:var(--paper);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tabs-in{display:flex;gap:2px;max-width:1080px;margin:0 auto;padding:0 12px}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;padding:11px 13px;
+  font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;letter-spacing:.02em}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--green);border-bottom-color:var(--green)}
+main{padding:22px 0 70px}
+.view{display:none} .view.on{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}}
+
+/* ---------- primitives ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.pad{padding:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin-bottom:7px}
+.sec{margin-bottom:26px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:13px;flex-wrap:wrap}
+.sec-head h2{font-size:19px}
+.sec-head .note-r{font-size:12.5px;color:var(--faint);margin-left:auto}
+.muted{color:var(--muted)} .faint{color:var(--faint)}
+.small{font-size:12.5px} .tiny{font-size:11.5px}
+hr.hr{height:1px;background:var(--line-soft);margin:16px 0;border:0}
+
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;
+  letter-spacing:.03em;white-space:nowrap}
+.pill.g{background:var(--green-soft);color:var(--green-deep)}
+.pill.a{background:var(--amber-soft);color:#9a6a10}
+.pill.c{background:var(--coral-soft);color:#b23c28}
+.pill.t{background:var(--teal-soft);color:var(--teal)}
+.pill.n{background:var(--line-soft);color:var(--muted)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .pill.a{color:var(--amber)}
+  :root:not([data-theme="light"]) .pill.c{color:var(--coral)}
+}
+:root[data-theme="dark"] .pill.a{color:var(--amber)}
+:root[data-theme="dark"] .pill.c{color:var(--coral)}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  padding:9px 15px;border-radius:var(--r-sm);font-size:13.5px;font-weight:600;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;transition:.14s;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--green);border-color:var(--green);color:#fff}
+.btn.pri:hover{background:var(--green-deep);border-color:var(--green-deep)}
+.btn.gho{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.gho:hover{background:var(--line-soft);color:var(--ink)}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+
+.field{display:block;margin-bottom:13px}
+.field > span{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.field > span em{font-style:normal;color:var(--faint);font-weight:400}
+.inp{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:var(--paper);font-size:14.5px;font-family:var(--mono);transition:.14s}
+.inp:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft);background:var(--card)}
+select.inp,textarea.inp{font-family:var(--sans);font-size:14px}
+textarea.inp{resize:vertical;min-height:64px;line-height:1.6}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.table-wrap table{min-width:520px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+thead th{background:var(--line-soft);font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);
+  text-transform:uppercase}
+tbody tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tbody tr.hi{background:var(--green-soft)}
+
+/* ---------- metrics ---------- */
+.metric{border-radius:var(--r);padding:15px 16px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+.metric::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--line)}
+.metric.g::after{background:var(--green)} .metric.a::after{background:var(--amber)}
+.metric.c::after{background:var(--coral)} .metric.t::after{background:var(--teal)}
+.metric .lab{font-size:11.5px;font-weight:700;letter-spacing:.09em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.metric .val{font-family:var(--mono);font-size:29px;font-weight:700;line-height:1.1;letter-spacing:-.03em}
+.metric .val small{font-size:14px;font-weight:600;color:var(--muted);margin-left:3px;letter-spacing:0}
+.metric .sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+.metric .delta{font-family:var(--mono);font-size:12.5px;font-weight:700}
+.up{color:var(--coral)} .down{color:var(--green)} .flat{color:var(--faint)}
+
+.callout{background:linear-gradient(135deg,var(--green-deep),var(--teal));color:#fff;border-radius:var(--r);padding:20px 22px}
+.callout .eyebrow{color:rgba(255,255,255,.75)}
+.callout .answer{font-size:25px;font-weight:700;line-height:1.25;letter-spacing:-.02em}
+.callout p{color:rgba(255,255,255,.9);font-size:13.5px;margin-top:8px}
+.callout .answer .num{font-size:33px}
+:root[data-theme="dark"] .callout,
+:root:not([data-theme="light"]) .callout{color:#04211a}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .callout{color:#fff}}
+
+.bar{height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+.bar > i{display:block;height:100%;border-radius:99px;background:var(--green);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.bar > i.a{background:var(--amber)} .bar > i.c{background:var(--coral)}
+
+.note{border-left:3px solid var(--amber);background:var(--amber-soft);padding:11px 14px;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:13px;line-height:1.6}
+.note.g{border-color:var(--green);background:var(--green-soft)}
+.note.c{border-color:var(--coral);background:var(--coral-soft)}
+.note.t{border-color:var(--teal);background:var(--teal-soft)}
+.note b{font-weight:700}
+
+/* ---------- check items ---------- */
+.checks{display:grid;gap:8px}
+.chk{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--card);cursor:pointer;transition:.14s;position:relative}
+.chk:hover{border-color:var(--green)}
+.chk input{position:absolute;opacity:0;pointer-events:none}
+.chk .box{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--line);flex:0 0 auto;margin-top:1px;
+  display:grid;place-items:center;transition:.14s;background:var(--paper)}
+.chk .box svg{width:12px;height:12px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transition:.14s}
+.chk input:checked ~ .box{background:var(--green);border-color:var(--green)}
+.chk input:checked ~ .box svg{opacity:1}
+.chk .txt{flex:1;min-width:0}
+.chk .txt b{display:block;font-size:13.5px;font-weight:600}
+.chk .txt span{display:block;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px}
+.chk .kc{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green);flex:0 0 auto;margin-top:1px}
+.chk.dim{opacity:.52}
+.chk input:checked ~ .txt b{color:var(--green-deep)}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:var(--paper)}
+.seg button{appearance:none;border:0;background:none;padding:8px 16px;font-size:13.5px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:.14s}
+.seg button[aria-pressed="true"]{background:var(--green);color:#fff}
+.seg.amber button[aria-pressed="true"]{background:var(--amber);color:#3a2a06}
+
+.slider{width:100%;appearance:none;height:5px;border-radius:99px;background:var(--line);outline:0}
+.slider::-webkit-slider-thumb{appearance:none;width:21px;height:21px;border-radius:99px;background:var(--green);
+  border:3px solid var(--card);box-shadow:var(--shadow);cursor:pointer}
+.slider::-moz-range-thumb{width:21px;height:21px;border-radius:99px;background:var(--green);border:3px solid var(--card);cursor:pointer}
+
+/* ---------- week strip ---------- */
+.wstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.wstrip .w{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 11px;background:var(--card)}
+.wstrip .w.now{border-color:var(--green);background:var(--green-soft)}
+.wstrip .w.past{opacity:.6}
+.wstrip .w b{font-size:13px;display:block}
+.wstrip .w span{font-size:11px;color:var(--muted);display:block;line-height:1.4}
+@media(max-width:560px){.wstrip{grid-template-columns:repeat(2,1fr)}}
+
+.daystrip{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.daystrip::-webkit-scrollbar{display:none}
+.dcell{flex:0 0 auto;width:46px;text-align:center;border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:6px 0;background:var(--card);cursor:pointer;transition:.14s}
+.dcell:hover{border-color:var(--green)}
+.dcell.sel{border-color:var(--green);background:var(--green);color:#fff}
+.dcell.sel .dd,.dcell.sel .dw{color:#fff}
+.dcell.fut{opacity:.4}
+.dcell .dw{font-size:10px;color:var(--faint);letter-spacing:.04em}
+.dcell .dd{font-family:var(--mono);font-size:15px;font-weight:700}
+.dcell .dot{width:5px;height:5px;border-radius:99px;background:var(--line);margin:3px auto 0}
+.dcell .dot.f{background:var(--green)} .dcell .dot.p{background:var(--amber)}
+.dcell.sel .dot{background:rgba(255,255,255,.9)}
+.dcell.soc{box-shadow:inset 0 -3px 0 var(--amber)}
+
+/* ---------- charts ---------- */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid-l{stroke:var(--line-soft);stroke-width:1}
+.chart .axis-t{fill:var(--faint);font-size:10px;font-family:var(--mono)}
+.chart .ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chart .pt{stroke:var(--card);stroke-width:1.5}
+.chart .guard{stroke:var(--coral);stroke-width:1.5;stroke-dasharray:4 3;fill:none}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+.empty{text-align:center;padding:30px 18px;color:var(--faint);font-size:13.5px;line-height:1.7}
+
+/* ---------- plan prose ---------- */
+.prose{font-size:14.5px;line-height:1.8}
+.prose h3{font-size:16.5px;margin:26px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--line-soft)}
+.prose h3:first-child{margin-top:0}
+.prose h4{font-size:14.5px;margin:18px 0 8px;color:var(--teal)}
+.prose p{margin-bottom:11px}
+.prose ul{margin:0 0 12px 19px} .prose li{margin-bottom:5px}
+.prose b,.prose strong{font-weight:700}
+.prose .mech{font-size:13px;color:var(--muted);background:var(--line-soft);padding:9px 12px;border-radius:var(--r-sm);margin-bottom:11px}
+.prose .mech b{color:var(--teal)}
+.bind{font-family:var(--mono);font-weight:700;color:var(--green-deep);background:var(--green-soft);
+  padding:1px 6px;border-radius:5px;font-size:.94em;white-space:nowrap}
+.bind.unset{color:var(--faint);background:var(--line-soft);font-weight:400}
+
+details.acc{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin-bottom:10px;overflow:hidden}
+details.acc > summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:14.5px;list-style:none;
+  display:flex;align-items:center;gap:10px}
+details.acc > summary::-webkit-details-marker{display:none}
+details.acc > summary::before{content:"";width:6px;height:6px;border-right:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);transform:rotate(-45deg);transition:.18s;flex:0 0 auto;margin-left:2px}
+details.acc[open] > summary::before{transform:rotate(45deg)}
+details.acc > summary:hover{background:var(--line-soft)}
+details.acc .acc-body{padding:16px 18px 18px;border-top:1px solid var(--line-soft)}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
+  background:rgba(16,37,44,.55)}
+.modal.on{display:flex}
+.modal .sheet{background:var(--card);border-radius:var(--r);max-width:540px;width:100%;max-height:88vh;
+  overflow-y:auto;box-shadow:var(--shadow-lift);border:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);z-index:110;background:var(--ink);
+  color:var(--paper);padding:11px 18px;border-radius:99px;font-size:13.5px;font-weight:600;
+  box-shadow:var(--shadow-lift);opacity:0;transition:.28s cubic-bezier(.34,1.4,.64,1);pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{transform:translate(-50%,0);opacity:1}
+
+footer.foot{border-top:1px solid var(--line);margin-top:36px;padding:20px 0 34px;font-size:12px;color:var(--faint)}
+footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+@media print{nav.tabs,header.top,.no-print{display:none!important} .view{display:block!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="#f2ab2e"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
+      <div>
+        <b>四週精力維持計畫</b>
+        <small id="brandSub">執行台 · v1.0</small>
+      </div>
+    </div>
+    <div class="top-right">
+      <span class="sync-dot" id="syncDot" title="點擊立即同步"><i></i><span id="syncTxt">本機</span></span>
+      <button class="icon-btn" id="themeBtn" title="切換深/淺色" aria-label="切換深淺色">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-in" role="tablist">
+    <button class="tab" role="tab" data-view="dash" aria-selected="true">儀表板</button>
+    <button class="tab" role="tab" data-view="daily" aria-selected="false">今日打卡</button>
+    <button class="tab" role="tab" data-view="weekly" aria-selected="false">每週量測</button>
+    <button class="tab" role="tab" data-view="plan" aria-selected="false">計畫全文</button>
+    <button class="tab" role="tab" data-view="train" aria-selected="false">訓練課表</button>
+    <button class="tab" role="tab" data-view="set" aria-selected="false">設定 · 同步</button>
+  </div>
+</nav>
+
+<main>
+<!-- ============ 儀表板 ============ -->
+<section class="view on" id="v-dash">
+  <div class="wrap">
+
+    <div class="sec" id="dashGate" hidden>
+      <div class="card pad">
+        <div class="eyebrow">先做這一步</div>
+        <h2 style="font-size:20px;margin-bottom:8px">輸入你的基線，整份計畫才會算出數字</h2>
+        <p class="muted small" style="margin-bottom:14px">本頁所有熱量、蛋白質、瘦體重護欄都是<b>依你的身體數據即時計算</b>的，網站原始碼裡沒有寫死任何個人數字。輸入後只存在你的瀏覽器（以及你自己的同步空間）。</p>
+        <button class="btn pri" data-goto="set">前往設定基線 →</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="callout" id="todayCallout">
+        <div class="eyebrow">本週唯一要新增的決策</div>
+        <div class="answer" id="weekFocus">—</div>
+        <p id="weekFocusSub">—</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>四週疊加節奏</h2>
+        <span class="note-r" id="phaseNote">—</span>
+      </div>
+      <div class="wstrip" id="weekStrip"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>三個核心指標</h2>
+        <span class="note-r">依優先序：瘦體重 &gt; 腰圍 &gt; 體重</span>
+      </div>
+      <div class="grid g4" id="metricRow"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>本週能量缺口</h2>
+        <span class="note-r">依打卡的依從度估算，非精算熱量</span>
+      </div>
+      <div class="card pad" id="deficitCard"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>趨勢</h2><span class="note-r">單日不看，只看趨勢線</span></div>
+      <div class="grid g2" id="chartGrid"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>本週執行紀錄</h2><span class="note-r" id="adhNote">—</span></div>
+      <div class="table-wrap"><table id="weekTable"></table></div>
+    </div>
+
+    <div class="sec">
+      <details class="acc">
+        <summary>紅旗自檢 · 出現以下情況請停止計畫並就醫</summary>
+        <div class="acc-body" id="redFlagBody"></div>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 今日打卡 ============ -->
+<section class="view" id="v-daily">
+  <div class="wrap">
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2 id="dailyTitle">今日打卡</h2>
+        <span class="note-r" id="dailyMeta">—</span>
+      </div>
+      <div class="daystrip" id="dayStrip"></div>
+    </div>
+
+    <div class="sec">
+      <div class="card pad">
+        <div class="eyebrow">第一步</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px">
+          <b style="font-size:15px">今天是哪一種日子？</b>
+          <div class="seg amber" id="dayTypeSeg">
+            <button data-t="normal" aria-pressed="true">平日</button>
+            <button data-t="social" aria-pressed="false">應酬日</button>
+          </div>
+          <span class="small muted" id="dayTypeHint"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>30 秒記錄</h2></div>
+      <div class="card pad">
+        <div class="grid g4">
+          <label class="field" style="margin:0">
+            <span>晨起體重 <em>kg</em></span>
+            <input class="inp" type="number" step="0.1" min="30" max="200" id="f_weight" placeholder="—" inputmode="decimal">
+          </label>
+          <label class="field" style="margin:0">
+            <span>今日步數</span>
+            <input class="inp" type="number" step="100" min="0" max="60000" id="f_steps" placeholder="—" inputmode="numeric">
+          </label>
+          <label class="field" style="margin:0">
+            <span>昨晚入睡 <em>大約即可</em></span>
+            <input class="inp" type="time" id="f_sleep">
+          </label>
+          <label class="field" style="margin:0">
+            <span>今日精力 <em id="energyVal">— /10</em></span>
+            <input class="slider" type="range" min="1" max="10" step="1" id="f_energy" value="6" style="margin-top:12px">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>蛋白質四格</h2>
+        <span class="note-r" id="proteinNote">—</span>
+      </div>
+      <div class="checks" id="proteinChecks"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2 id="rulesTitle">飲食規則</h2>
+        <span class="note-r">灰色 = 依四週節奏本週尚未啟動，做了也算加分</span>
+      </div>
+      <div class="checks" id="ruleChecks"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>睡眠與訓練</h2></div>
+      <div class="checks" id="habitChecks"></div>
+    </div>
+
+    <div class="sec">
+      <label class="field">
+        <span>備註 <em>選填。卡關、身體訊號、應酬場合</em></span>
+        <textarea class="inp" id="f_note" placeholder="例：今晚喜宴 3 杯紅酒；深蹲膝蓋有點緊"></textarea>
+      </label>
+      <div class="btn-row">
+        <button class="btn pri" id="saveDay">儲存今日</button>
+        <button class="btn gho" id="clearDay">清除本日紀錄</button>
+        <span class="small faint" id="saveHint"></span>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="card pad" id="dayEstimate"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 每週量測 ============ -->
+<section class="view" id="v-weekly">
+  <div class="wrap">
+    <div class="sec">
+      <div class="sec-head">
+        <h2>每週日晨起量測</h2>
+        <span class="note-r">四項固定條件都要做到，數據才有比較意義</span>
+      </div>
+      <div class="note t" style="margin-bottom:14px">
+        家用體脂計用生物電阻抗原理，<b>受身體水分影響極大</b>。單次絕對值誤差可達 ±3–4%，但同一台機器、固定條件下的<b>趨勢是可靠的</b>。判讀原則：不看單週絕對值，看四週趨勢線。
+      </div>
+      <div id="weeklyForms"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>量測總表</h2><span class="note-r">瘦體重 = 體重 × (1 − 體脂率)</span></div>
+      <div class="table-wrap"><table id="measureTable"></table></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>合理預期曲線</h2></div>
+      <div class="grid g4">
+        <div class="metric t"><div class="lab">W1–W2</div><div class="val" style="font-size:19px">水分與肝醣</div><div class="sub">可能出現 1–1.5 kg 快速下降。<b>這多半不是脂肪</b>，不要據此上調期待。</div></div>
+        <div class="metric a"><div class="lab">W3</div><div class="val" style="font-size:19px">停滯是正常的</div><div class="sub">多數人在這裡誤判並放棄。先看腰圍與精力分數再決定調整。</div></div>
+        <div class="metric g"><div class="lab">W4</div><div class="val" style="font-size:19px">回到穩定速率</div><div class="sub">每週 0.35–0.45 kg。這才是可持續的區間。</div></div>
+        <div class="metric c"><div class="lab">成敗判準</div><div class="val" style="font-size:19px">瘦體重</div><div class="sub">體重掉得多但瘦體重跌破護欄，是失敗的減重——基礎代謝下降，為復胖埋線。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 計畫全文 ============ -->
+<section class="view" id="v-plan">
+  <div class="wrap">
+    <div class="sec">
+      <div class="eyebrow">計畫全文 · 依你的基線即時換算</div>
+      <h2 style="font-size:22px;margin-bottom:6px">綠色數字全部來自你在設定頁輸入的身體數據</h2>
+      <p class="muted small">原始碼中不含任何個人數值。若顯示為灰色「—」，代表你還沒設定基線。</p>
+    </div>
+    <div id="planBody"></div>
+  </div>
+</section>
+
+<!-- ============ 訓練課表 ============ -->
+<section class="view" id="v-train">
+  <div class="wrap">
+    <div class="sec">
+      <div class="callout">
+        <div class="eyebrow">定位</div>
+        <div class="answer">這兩次不是用來燒熱量的，是用來守住瘦體重的</div>
+        <p>30 分鐘阻力訓練約 150–200 kcal，遠不如少喝一杯調酒。它唯一的任務是讓熱量缺口只吃脂肪、不吃肌肉。強度不需拉高，持續性才是重點。</p>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="grid g3">
+        <div class="metric t"><div class="lab">時段</div><div class="val" style="font-size:20px">週二 · 週四</div><div class="sub">20:30–21:00。21:00 結束到就寢有 2 小時緩衝，不影響入睡。</div></div>
+        <div class="metric g"><div class="lab">成功標準</div><div class="val">6<small>/ 8 次</small></div><div class="sub">75% 即達標。留兩次給突發會議與加班——排不進去的計畫等於沒有計畫。</div></div>
+        <div class="metric a"><div class="lab">強度標準</div><div class="val" style="font-size:20px">留 2–3 下</div><div class="sub">每組結束時感覺「還能再做 2–3 下就力竭」。<b>不要練到力竭。</b></div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><h2>W1–W2 降階版</h2><span class="note-r">5 動作 × 3 輪，動作間休息 60 秒</span></div>
+      <div class="table-wrap"><table id="trainA"></table></div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><h2>W3–W4 進階版</h2><span class="note-r">同樣 3 輪，休息 60 秒</span></div>
+      <div class="table-wrap"><table id="trainB"></table></div>
+    </div>
+    <div class="sec">
+      <div class="note c">
+        <b>完全無運動習慣的第一週提醒：</b>訓練後 24–48 小時痠痛正常。但若<b>痠到影響上班或走路</b>，代表強度太高，下次直接砍成 2 輪。第一個月的成敗不在強度，在有沒有練滿次數。
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><h2>訓練完成紀錄</h2><span class="note-r" id="trainCount">—</span></div>
+      <div class="table-wrap"><table id="trainLog"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 設定 ============ -->
+<section class="view" id="v-set">
+  <div class="wrap">
+
+    <div class="sec">
+      <div class="sec-head"><h2>身體基線</h2><span class="note-r">只存在你的瀏覽器與你自己的同步空間</span></div>
+      <div class="card pad">
+        <div class="grid g3">
+          <label class="field"><span>身高 <em>cm</em></span><input class="inp" type="number" step="0.5" id="p_height" inputmode="decimal"></label>
+          <label class="field"><span>起始體重 <em>kg</em></span><input class="inp" type="number" step="0.1" id="p_weight" inputmode="decimal"></label>
+          <label class="field"><span>起始體脂率 <em>%</em></span><input class="inp" type="number" step="0.1" id="p_bf" inputmode="decimal"></label>
+          <label class="field"><span>出生年月 <em>用於年齡提醒</em></span><input class="inp" type="month" id="p_birth"></label>
+          <label class="field"><span>起始腰圍 <em>cm · 選填</em></span><input class="inp" type="number" step="0.5" id="p_waist" inputmode="decimal"></label>
+          <label class="field"><span>基線日均步數 <em>W1 記錄後填入</em></span><input class="inp" type="number" step="100" id="p_basesteps" inputmode="numeric"></label>
+        </div>
+        <hr class="hr">
+        <div class="grid g3">
+          <label class="field"><span>每週應酬次數</span><input class="inp" type="number" step="0.5" min="0" max="7" id="p_social" inputmode="decimal"></label>
+          <label class="field"><span>活動係數 <em>久坐 1.35</em></span>
+            <select class="inp" id="p_pal">
+              <option value="1.2">1.20 · 幾乎不動</option>
+              <option value="1.35">1.35 · 久坐辦公</option>
+              <option value="1.5">1.50 · 中度活動</option>
+              <option value="1.65">1.65 · 高度活動</option>
+            </select>
+          </label>
+          <label class="field"><span>計畫起始日 <em>W1 第一天</em></span><input class="inp" type="date" id="p_start"></label>
+        </div>
+        <div class="btn-row">
+          <button class="btn pri" id="saveProfile">儲存基線並重算全站</button>
+          <span class="small faint" id="profileHint"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>由基線推導出的計畫參數</h2><span class="note-r">Katch-McArdle 公式</span></div>
+      <div class="card pad" id="derivedBox"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>雲端同步</h2><span class="note-r">跨手機 / 電腦共用同一份紀錄</span></div>
+      <div class="card pad">
+        <div class="note t" style="margin-bottom:14px">
+          <b>為什麼要貼「同步碼」而不是寫在網站裡：</b>這個網站的原始碼是公開的。連線金鑰若寫死在檔案裡，任何人都能讀寫你的紀錄。因此金鑰只存在你自己的瀏覽器，貼一次即可，換裝置再貼一次。
+        </div>
+        <label class="field">
+          <span>同步碼 <em>一段長字串，貼上後按啟用</em></span>
+          <textarea class="inp" id="s_code" placeholder="貼上同步碼…" style="font-family:var(--mono);font-size:12px;min-height:76px"></textarea>
+        </label>
+        <div class="btn-row">
+          <button class="btn pri" id="applySync">啟用同步</button>
+          <button class="btn" id="pullNow">立即從雲端拉取</button>
+          <button class="btn" id="pushNow">立即上傳</button>
+          <button class="btn gho" id="copySync">複製我的同步碼</button>
+          <button class="btn gho" id="dropSync">停用同步</button>
+        </div>
+        <p class="small faint" id="syncStatus" style="margin-top:10px">—</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>資料匯出</h2><span class="note-r">丟進 Google Sheet 做自己的樞紐分析</span></div>
+      <div class="card pad">
+        <div class="btn-row">
+          <button class="btn" id="expCsvDay">匯出每日 CSV</button>
+          <button class="btn" id="expCsvWeek">匯出每週 CSV</button>
+          <button class="btn" id="expJson">匯出完整 JSON 備份</button>
+          <button class="btn gho" id="impJson">匯入 JSON 備份</button>
+          <input type="file" id="impFile" accept=".json" hidden>
+        </div>
+        <p class="small faint" style="margin-top:10px">CSV 為 UTF-8 BOM 編碼，Excel 與 Google Sheet 直接開啟不會亂碼。</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>危險操作</h2></div>
+      <div class="card pad">
+        <div class="btn-row">
+          <button class="btn" id="wipeLocal">清空本機所有紀錄</button>
+        </div>
+        <p class="small faint" style="margin-top:10px">不會刪除雲端資料。清空後可用「立即從雲端拉取」還原。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>四週精力維持計畫 · 執行台 v1.0</span>
+    <span id="footRange">—</span>
+    <span style="margin-left:auto">本頁不是醫療建議。出現紅旗症狀請就醫。</span>
+  </div>
+</footer>
+
+<div class="modal" id="modal"><div class="sheet"><div class="pad" style="padding:22px" id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+
+/* ==================================================================
+   0. 常數與工具
+   ================================================================== */
+var LS_KEY = "ep4w_state_v1";
+var LS_SYNC = "ep4w_sync_v1";
+var DAY = 864e5;
+
+var $  = function(s,r){ return (r||document).querySelector(s); };
+var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+var esc = function(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+var clamp = function(v,a,b){ return Math.max(a, Math.min(b, v)); };
+var r1 = function(v){ return Math.round(v*10)/10; };
+var r50 = function(v){ return Math.round(v/50)*50; };
+var nf = function(v,d){ if(v==null||isNaN(v)) return "—"; return Number(v).toFixed(d==null?0:d); };
+var thou = function(v){ if(v==null||isNaN(v)) return "—"; return Math.round(v).toLocaleString("en-US"); };
+
+function ymd(d){ var z=new Date(d.getTime()-d.getTimezoneOffset()*6e4); return z.toISOString().slice(0,10); }
+function parseYmd(s){ var p=String(s).split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function addDays(s,n){ var d=parseYmd(s); d.setDate(d.getDate()+n); return ymd(d); }
+function diffDays(a,b){ return Math.round((parseYmd(b)-parseYmd(a))/DAY); }
+var WD = ["日","一","二","三","四","五","六"];
+function wdOf(s){ return parseYmd(s).getDay(); }
+function todayStr(){ return ymd(new Date()); }
+
+function toast(msg){
+  var t=$("#toast"); t.textContent=msg; t.classList.add("on");
+  clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove("on"); }, 2400);
+}
+
+/* ==================================================================
+   1. 規則定義（四週疊加節奏的資料化）
+   ================================================================== */
+
+/* 飲食規則：kcal = 該規則在「熱量權重」中的份量 */
+var RULES = {
+  normal: [
+    { id:"noSugar",  w:150, from:2, t:"全天無含糖飲料、甜點、宵夜",
+      d:"手搖、罐裝飲料、辦公室零食。這是最容易被忽略、也最容易砍掉的一塊。" },
+    { id:"lunchCarb",w:250, from:3, t:"午餐澱粉減半，先吃菜與肉、最後吃澱粉",
+      d:"壓平餐後血糖曲線，兼顧下午精力。不用換餐廳、不用備餐、不用跟同事解釋。" },
+    { id:"dinnerFix",w: 80, from:3, t:"晚餐蛋白質手掌 1.5 份 + 蔬菜，不加餐",
+      d:"晚餐不再額外加澱粉或第二輪。" }
+  ],
+  social: [
+    { id:"r1", w:500, from:2, t:"規則 1 · 酒最多 2 杯，且改喝紅酒或烈酒加無糖氣泡水",
+      d:"杯數不變、社交上看不出差別，一晚省 400–800 kcal。同時救回後半夜深睡——全計畫唯一一石二鳥的動作。" },
+    { id:"r2", w:400, from:3, t:"規則 2 · 跳過主食、炸物、甜點",
+      d:"這三樣是桌菜熱量密度最高、飽足感最低的部分。菜和肉可以照吃，不需要客氣。" },
+    { id:"r3", w:350, from:3, t:"規則 3 · 當日午餐只吃菜與肉，不吃澱粉",
+      d:"白天預算轉移：省下的額度留給晚上。早餐照常高蛋白。" }
+  ]
+};
+
+/* 睡眠與訓練習慣 */
+var HABITS = [
+  { id:"train",    from:1, t:"完成阻力訓練（週二 / 週四）", d:"守住瘦體重的唯一項目。強度不需拉高，持續性才是重點。", onlyWd:[2,4] },
+  { id:"sleepOn",  from:2, t:"入睡落在 23:00 ± 30 分", d:"你的睡眠時數已足夠，本月要收斂的是波動，不是拉長。" },
+  { id:"caffeine", from:3, t:"最後一杯咖啡因在 15:00 前", d:"含茶、可樂、能量飲。半衰期 5–6 小時，15:00 那杯到 23:00 仍有約 25% 殘留。" },
+  { id:"noLateEtOH", from:2, t:"睡前 3 小時內未再飲酒", d:"酒精加速入睡但顯著抑制後半夜深睡與快速動眼期。這是「睡滿 8 小時仍然疲倦」最常見的單一原因。" }
+];
+
+var PROTEIN_SLOTS = [
+  { id:"b", share:.286, t:"早餐", d:"3 顆蛋 + 無糖豆漿 / 希臘優格 / 蛋白飲" },
+  { id:"l", share:.286, t:"午餐", d:"手掌大小的肉或魚 × 1.5 份" },
+  { id:"d", share:.286, t:"晚餐", d:"手掌大小的肉或魚 × 1.5 份" },
+  { id:"x", share:.142, t:"補充", d:"無糖優格、豆漿、水煮蛋、蛋白粉" }
+];
+
+var WEEK_META = [
+  { n:1, focus:"先不節食，只把你的真實起點量出來",
+    sub:"本週唯一任務是建立基線：晨起體重、日均步數、實際入睡時間。沒有基線，第三週你會不知道該調高還是調低。另外把早餐蛋白質吃到目標、完成 2 次降階版訓練。",
+    diet:"照常吃 + 記錄晨起體重；早餐吃到蛋白質目標", act:"記錄目前每日步數（不改變）；訓練 2 次（降階版）", sleep:"記錄實際入睡時間（不強迫改變）", steps:0 },
+  { n:2, focus:"改喝紅酒或烈酒加無糖氣泡水，上限 2 杯",
+    sub:"四週裡投報率最高的單一動作——它同時砍熱量與救睡眠，執行成本只是換一種杯子裡的東西。本週同時啟動雙預算制、步數 +1,500、入睡收斂到 23:00 ± 30 分。",
+    diet:"啟動雙預算制 + 應酬日規則 1（酒）", act:"步數 +1,500；訓練 2 次（降階版）", sleep:"入睡收斂到 23:00 ± 30 分", steps:1500 },
+  { n:3, focus:"應酬桌上跳過主食、炸物、甜點；午餐澱粉減半",
+    sub:"規則 2、3 一起上，這是飲食端的最後一塊。步數加到 +3,000 達標，訓練換進階版，咖啡因 15:00 斷點。本週體重停滯是正常的，先看腰圍與精力分數再決定調整。",
+    diet:"+ 應酬日規則 2、3；+ 午餐澱粉減半", act:"步數 +3,000（達標）；訓練 2 次（進階版）", sleep:"咖啡因 15:00 斷點", steps:3000 },
+  { n:4, focus:"全部維持，不新增任何新規則",
+    sub:"四週的目的不是這個月掉幾公斤，是讓你手上有一組不需思考的習慣，而不是一份放棄的清單。本週回顧記錄，準備校準下一版。",
+    diet:"全部維持，不新增", act:"維持；訓練 2 次（進階版）", sleep:"全部維持，回顧記錄", steps:3000 }
+];
+
+var TRAIN_A = [
+  ["椅式深蹲<span class='faint small'>（坐到椅子輕觸再站起）</span>","下肢","12 下","體重較大時徒手深蹲膝關節負荷不小，椅子當保險"],
+  ["斜面伏地挺身<span class='faint small'>（手撐桌沿或牆面）</span>","胸、肩、三頭","10–12 下","手撐越高越輕鬆，從桌沿開始"],
+  ["划船<span class='faint small'>（啞鈴 / 彈力帶 / 水瓶）</span>","上背","12 下","直接改善久坐圓肩"],
+  ["臀橋<span class='faint small'>（平躺屈膝抬臀）</span>","臀、腿後","15 下","護腰，久坐族最缺"],
+  ["棒式<span class='faint small'>（可跪姿）</span>","核心","20–30 秒","撐不住就跪姿，不要憋氣"]
+];
+var TRAIN_B = [
+  ["徒手深蹲（不碰椅子）","下肢","15 下"],
+  ["伏地挺身（手撐高度降低）","胸、肩、三頭","12 下"],
+  ["划船","上背","15 下或加重"],
+  ["臀橋（單腳或負重）","臀、腿後","12 下 / 邊"],
+  ["棒式","核心","45 秒"]
+];
+
+var RED_FLAGS = [
+  ["運動中或運動後出現胸悶、胸痛、異常喘、頭暈、心悸","立即停止訓練並就醫"],
+  ["血壓持續 ≥ 140/90 mmHg","就醫評估，暫緩加大訓練強度"],
+  ["非刻意的體重快速下降（一個月超過體重的 5%）","就醫排除其他原因"],
+  ["白天嚴重嗜睡、睡眠中被目擊呼吸中止或嚴重打鼾","<b>建議就醫做睡眠檢查評估睡眠呼吸中止症。</b>自覺「品質尚可」降低了風險但不能排除；體脂偏高的中年男性仍是風險族群，一般健檢不含睡眠檢查。若配偶曾提及你打鼾嚴重或呼吸中斷，這一項應優先於本計畫全部內容。"]
+];
+
+/* ==================================================================
+   2. 狀態
+   ================================================================== */
+var S = { v:1, profile:{}, days:{}, weeks:{}, ts:0 };
+var SYNC = null;          /* {u,k,s} */
+var selDate = todayStr();
+
+function blankProfile(){
+  return { height:null, weight:null, bf:null, birth:"", waist:null,
+           baseSteps:null, social:2.5, pal:1.35, start:"", ts:0 };
+}
+
+function load(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){ var o = JSON.parse(raw); if(o && typeof o==="object"){ S = o; } }
+  }catch(e){}
+  if(!S.profile) S.profile = blankProfile();
+  if(!S.days) S.days = {};
+  if(!S.weeks) S.weeks = {};
+  try{
+    var sc = localStorage.getItem(LS_SYNC);
+    if(sc) SYNC = JSON.parse(sc);
+  }catch(e){}
+}
+function save(){
+  S.ts = Date.now();
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){ toast("本機儲存失敗（空間不足？）"); }
+  schedulePush();
+}
+
+/* ==================================================================
+   3. 推導引擎
+   ================================================================== */
+function startDate(){ return S.profile.start || "2026-08-18"; }
+function endDate(){ return addDays(startDate(), 27); }
+
+function weekOf(date){
+  var d = diffDays(startDate(), date);
+  if(d < 0) return 0;
+  var w = Math.floor(d/7) + 1;
+  return w > 4 ? 5 : w;
+}
+function weekMeta(w){ return WEEK_META[clamp(w,1,4)-1]; }
+function weekDates(w){
+  var out=[], s=addDays(startDate(),(w-1)*7);
+  for(var i=0;i<7;i++) out.push(addDays(s,i));
+  return out;
+}
+
+function D(){
+  var p = S.profile;
+  if(!p || !p.weight || !p.bf) return null;
+  var w = +p.weight, bfp = +p.bf/100;
+  var lbm = w*(1-bfp), fatMass = w-lbm;
+  var bmr = 370 + 21.6*lbm;
+  var pal = +p.pal || 1.35;
+  var tdee = bmr*pal;
+  var kcalN = r50(tdee-480), kcalS = r50(tdee-180);
+  var protein = Math.round(lbm*2.3/5)*5;
+  var fatG = Math.round(w*0.75/5)*5;
+  var carb = Math.max(0, Math.round((kcalN - protein*4 - fatG*9)/4/5)*5);
+  var social = (p.social==null?2.5:+p.social);
+  var normalD = Math.max(0, 7-social);
+  var neatPerStep = w*0.00045;                    /* kcal / 步 */
+  var neat3000 = 3000*neatPerStep;
+  var wkDeficit = normalD*480 + social*180 + 7*neat3000;
+  var age = null;
+  if(p.birth){ var b=p.birth.split("-"); if(b.length>=2){ var now=new Date();
+      age = now.getFullYear()-(+b[0]) + (now.getMonth()+1-(+b[1]))/12; age=Math.floor(age); } }
+  return {
+    w:w, bfp:bfp, lbm:lbm, fatMass:fatMass, bmr:bmr, pal:pal, tdee:tdee,
+    kcalN:kcalN, kcalS:kcalS, protein:protein, fatG:fatG, carb:carb,
+    social:social, normalD:normalD, neatPerStep:neatPerStep, neat3000:neat3000,
+    wkDeficit:wkDeficit, kgWeek:wkDeficit/7700, kgMonth:wkDeficit*4/7700,
+    lbmGuard:r1(lbm-0.6), bmi: p.height? w/Math.pow(p.height/100,2) : null,
+    tgtW: [r1(w - wkDeficit*4/7700), r1(w - wkDeficit*4/7700*0.8)],
+    tgtBf: [r1(p.bf-1.5), r1(p.bf-1.2)],
+    age: age,
+    baseSteps: p.baseSteps||null
+  };
+}
+
+/* 某週某日型態下，已啟動規則的權重占比 */
+function activeFrac(week, type){
+  var list = RULES[type], tot=0, act=0;
+  for(var i=0;i<list.length;i++){ tot+=list[i].w; if(week>=list[i].from) act+=list[i].w; }
+  return tot? act/tot : 0;
+}
+function tickedFrac(day, type){
+  var list = RULES[type], tot=0, got=0, r = (day && day.r) || {};
+  for(var i=0;i<list.length;i++){ tot+=list[i].w; if(r[list[i].id]) got+=list[i].w; }
+  return tot? got/tot : 0;
+}
+
+/* 單日估算 */
+function dayCalc(date){
+  var d = S.days[date] || null;
+  var dv = D();
+  var wk = weekOf(date);
+  var type = (d && d.type) || "normal";
+  var out = { has:!!d, week:wk, type:type, dietTarget:0, dietGot:0, neat:0, neatTarget:0,
+              total:0, target:0, ratio:0, steps:(d&&d.steps)||null, proteinG:0, proteinTarget:0 };
+  if(!dv) return out;
+  var full = (type==="social") ? 180 : 480;
+  out.dietTarget = (wk>=1&&wk<=4) ? full*activeFrac(wk,type) : 0;
+  out.dietGot    = full*tickedFrac(d,type);
+  var stepTarget = (wk>=1&&wk<=4) ? weekMeta(wk).steps : 3000;
+  out.neatTarget = stepTarget*dv.neatPerStep;
+  if(d && d.steps!=null && dv.baseSteps!=null){
+    out.neat = Math.max(0, d.steps - dv.baseSteps) * dv.neatPerStep;
+  }
+  out.target = out.dietTarget + out.neatTarget;
+  out.total  = out.dietGot + out.neat;
+  out.ratio  = out.target>0 ? out.total/out.target : 0;
+  out.proteinTarget = dv.protein;
+  if(d && d.p){ for(var i=0;i<PROTEIN_SLOTS.length;i++){
+      if(d.p[PROTEIN_SLOTS[i].id]) out.proteinG += dv.protein*PROTEIN_SLOTS[i].share; } }
+  out.proteinG = Math.round(out.proteinG/5)*5;
+  return out;
+}
+
+function weekCalc(w){
+  var dv = D(), dates = weekDates(w);
+  var res = { logged:0, total:0, target:0, adhDone:0, adhAll:0, trains:0,
+              wSum:0, wN:0, stepSum:0, stepN:0, enSum:0, enN:0, sleepSum:0, sleepN:0, socialN:0 };
+  if(!dv) return res;
+  for(var i=0;i<dates.length;i++){
+    var dt = dates[i], d = S.days[dt];
+    var c = dayCalc(dt);
+    if(d){
+      res.logged++;
+      res.total += c.total;
+      if(d.type==="social") res.socialN++;
+      if(d.weight!=null){ res.wSum+=d.weight; res.wN++; }
+      if(d.steps!=null){ res.stepSum+=d.steps; res.stepN++; }
+      if(d.energy!=null){ res.enSum+=d.energy; res.enN++; }
+      if(d.sleep){ res.sleepSum+=sleepMin(d.sleep); res.sleepN++; }
+      if(d.h && d.h.train) res.trains++;
+      var a = adherence(dt); res.adhDone+=a[0]; res.adhAll+=a[1];
+    }
+  }
+  var social = Math.min(dv.social, 7), normal = 7-social;
+  var full = 480, fullS = 180;
+  res.target = normal*full*activeFrac(w,"normal") + social*fullS*activeFrac(w,"social")
+             + 7*(w>=1&&w<=4? weekMeta(w).steps:3000)*dv.neatPerStep;
+  res.kg = res.total/7700;
+  res.kgTarget = res.target/7700;
+  return res;
+}
+
+/* 依從度：本週已啟動項目的完成比 */
+function adherence(date){
+  var d = S.days[date]; if(!d) return [0,0];
+  var wk = weekOf(date), done=0, all=0, i;
+  var list = RULES[d.type||"normal"];
+  for(i=0;i<list.length;i++){ if(wk>=list[i].from){ all++; if(d.r&&d.r[list[i].id]) done++; } }
+  for(i=0;i<PROTEIN_SLOTS.length;i++){ all++; if(d.p&&d.p[PROTEIN_SLOTS[i].id]) done++; }
+  for(i=0;i<HABITS.length;i++){
+    var h=HABITS[i];
+    if(wk < h.from) continue;
+    if(h.onlyWd && h.onlyWd.indexOf(wdOf(date))<0) continue;
+    all++; if(d.h&&d.h[h.id]) done++;
+  }
+  return [done,all];
+}
+
+function sleepMin(hhmm){
+  if(!hhmm) return null;
+  var p = hhmm.split(":"); var h=+p[0], m=+p[1];
+  var t = h*60+m;
+  if(t < 12*60) t += 24*60;      /* 00:30 視為 24:30 */
+  return t;
+}
+function minToHHMM(t){
+  if(t==null||isNaN(t)) return "—";
+  t = Math.round(t); var h = Math.floor(t/60)%24, m = t%60;
+  return (h<10?"0":"")+h+":"+(m<10?"0":"")+m;
+}
+
+/* 7 日移動平均體重 */
+function ma7(date){
+  var sum=0,n=0;
+  for(var i=0;i<7;i++){
+    var d = S.days[addDays(date,-i)];
+    if(d && d.weight!=null){ sum+=d.weight; n++; }
+  }
+  return n>=3 ? sum/n : null;
+}
+function latestMA(){
+  var t = todayStr();
+  for(var i=0;i<10;i++){ var v = ma7(addDays(t,-i)); if(v!=null) return {d:addDays(t,-i), v:v}; }
+  return null;
+}
+function latestWeek(){
+  for(var w=4;w>=1;w--){ var m=S.weeks[w]; if(m && m.bf!=null) return {w:w, m:m}; }
+  return null;
+}
+function lbmAt(w){
+  var m = S.weeks[w]; if(!m || m.bf==null) return null;
+  var wt = m.weight!=null ? m.weight : null;
+  if(wt==null){ var r=weekCalc(w); wt = r.wN? r.wSum/r.wN : null; }
+  if(wt==null) return null;
+  return wt*(1-m.bf/100);
+}
+/* ==================================================================
+   4. 圖表（純手繪 SVG，無外部依賴）
+   ================================================================== */
+function svgChart(cfg){
+  var W=640, H=cfg.h||190, PL=42, PR=12, PT=12, PB=24;
+  var iw=W-PL-PR, ih=H-PT-PB;
+  var yMin=cfg.yMin, yMax=cfg.yMax;
+  if(yMin===yMax){ yMin-=1; yMax+=1; }
+  var X=function(i){ return PL + (cfg.n<=1?iw/2 : iw*i/(cfg.n-1)); };
+  var Y=function(v){ return PT + ih*(1-(v-yMin)/(yMax-yMin)); };
+  var o=['<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+esc(cfg.alt||"趨勢圖")+'">'];
+
+  (cfg.bands||[]).forEach(function(b){
+    var y1=Y(b.hi), y2=Y(b.lo);
+    o.push('<rect x="'+PL+'" y="'+y1.toFixed(1)+'" width="'+iw+'" height="'+Math.abs(y2-y1).toFixed(1)+'" fill="var(--green-soft)" opacity=".7"/>');
+  });
+  var ticks = cfg.yTicks || 4;
+  for(var t=0;t<=ticks;t++){
+    var v = yMin + (yMax-yMin)*t/ticks, y=Y(v);
+    o.push('<line class="grid-l" x1="'+PL+'" y1="'+y.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+y.toFixed(1)+'"/>');
+    o.push('<text class="axis-t" x="'+(PL-6)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end">'+esc(cfg.fmtY? cfg.fmtY(v): nf(v,cfg.dy==null?0:cfg.dy))+'</text>');
+  }
+  (cfg.xLabels||[]).forEach(function(L){
+    o.push('<text class="axis-t" x="'+X(L.i).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+esc(L.t)+'</text>');
+    if(L.rule) o.push('<line class="grid-l" x1="'+X(L.i).toFixed(1)+'" y1="'+PT+'" x2="'+X(L.i).toFixed(1)+'" y2="'+(PT+ih)+'" stroke-dasharray="2 3"/>');
+  });
+  (cfg.guides||[]).forEach(function(g){
+    o.push('<line class="guard" x1="'+PL+'" y1="'+Y(g.y).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+Y(g.y).toFixed(1)+'" stroke="'+(g.color||"var(--coral)")+'"/>');
+  });
+  (cfg.series||[]).forEach(function(s){
+    var pts = s.pts.filter(function(p){ return p.v!=null; });
+    if(!pts.length) return;
+    if(s.line!==false && pts.length>1){
+      var dstr = pts.map(function(p,k){ return (k?"L":"M")+X(p.i).toFixed(1)+" "+Y(p.v).toFixed(1); }).join(" ");
+      o.push('<path class="ln" d="'+dstr+'" stroke="'+s.color+'"'+(s.dash?' stroke-dasharray="'+s.dash+'"':'')+(s.width?' stroke-width="'+s.width+'"':'')+'/>');
+    }
+    if(s.dots!==false) pts.forEach(function(p){
+      o.push('<circle class="pt" cx="'+X(p.i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="'+(s.r||3)+'" fill="'+s.color+'"/>');
+    });
+  });
+  o.push('</svg>');
+  return o.join("");
+}
+function chartCard(title, note, svg, legend){
+  return '<div class="card pad"><div class="sec-head" style="margin-bottom:10px"><h2 style="font-size:15px">'+esc(title)+
+    '</h2><span class="note-r">'+esc(note||"")+'</span></div>'+svg+
+    (legend? '<div class="legend">'+legend+'</div>':'')+'</div>';
+}
+function lg(color,label){ return '<span><i style="background:'+color+'"></i>'+esc(label)+'</span>'; }
+
+/* ==================================================================
+   5. 各頁渲染
+   ================================================================== */
+function renderAll(){
+  renderDash(); renderDaily(); renderWeekly(); renderPlan(); renderTrain(); renderSet();
+  $("#footRange").textContent = startDate()+" → "+endDate()+"（4 週）";
+}
+
+/* ---------- 儀表板 ---------- */
+function renderDash(){
+  var dv = D();
+  $("#dashGate").hidden = !!dv;
+  var today = todayStr(), wk = weekOf(today), cw = clamp(wk,1,4), wm = weekMeta(cw);
+
+  $("#weekFocus").textContent = wm.focus;
+  $("#weekFocusSub").textContent = wm.sub;
+  var dOff = diffDays(startDate(), today);
+  $("#phaseNote").textContent = wk===0 ? "計畫尚未開始"
+    : wk===5 ? "四週已結束 — 該回報數據校準 v1.1 了"
+    : "第 "+cw+" 週 · 第 "+(dOff+1)+"/28 天";
+  $("#brandSub").textContent = wk>=1&&wk<=4 ? ("W"+cw+" · 第 "+(dOff+1)+"/28 天") : "執行台 · v1.0";
+
+  $("#weekStrip").innerHTML = WEEK_META.map(function(m){
+    var dates = weekDates(m.n);
+    var cls = m.n===cw&&wk>=1&&wk<=4 ? "now" : (wk>m.n ? "past":"");
+    return '<div class="w '+cls+'"><b>W'+m.n+'　<span class="faint" style="font-weight:400">'+
+      dates[0].slice(5).replace("-","/")+'–'+dates[6].slice(5).replace("-","/")+'</span></b>'+
+      '<span>飲食　'+esc(m.diet)+'</span><span>活動　'+esc(m.act)+'</span><span>睡眠　'+esc(m.sleep)+'</span></div>';
+  }).join("");
+
+  /* --- 指標列 --- */
+  var ma = latestMA(), lw = latestWeek();
+  var mrow = [];
+  var lbmNow = lw? lbmAt(lw.w) : (dv? dv.lbm : null);
+  var guard = dv? dv.lbmGuard : null;
+  var lbmOk = (lbmNow==null||guard==null) ? null : lbmNow>=guard;
+  mrow.push(metricCard(lbmOk===false?"c":"g","瘦體重 · 最高優先",
+    lbmNow!=null? nf(lbmNow,1):"—", "kg",
+    guard!=null? ('護欄 <b class="num">≥ '+nf(guard,1)+'</b> kg'+(lbmNow!=null? '　'+(lbmOk?'<span class="pill g">守住</span>':'<span class="pill c">已跌破</span>'):''))
+      : "設定基線後計算"));
+  var waistNow = lw && lw.m.waist!=null ? lw.m.waist : (S.profile.waist||null);
+  var waist0 = S.profile.waist||null;
+  mrow.push(metricCard("t","腰圍 · 內臟脂肪指標",
+    waistNow!=null? nf(waistNow,1):"—","cm",
+    (waist0!=null&&waistNow!=null&&waistNow!==waist0)? deltaTxt(waistNow-waist0,"cm",1)+"　起始 "+nf(waist0,1)
+      : "台灣男性建議 &lt; 90 cm"));
+  mrow.push(metricCard("n","體重 · 7 日平均",
+    ma? nf(ma.v,1):"—","kg",
+    (ma&&dv)? (deltaTxt(ma.v-dv.w,"kg",1)+"　起始 "+nf(dv.w,1)+"　目標 "+nf(dv.tgtW[0],1)+"–"+nf(dv.tgtW[1],1))
+      : "至少記錄 3 天才會出現"));
+  var wc = weekCalc(cw);
+  var en = wc.enN? wc.enSum/wc.enN : null;
+  mrow.push(metricCard(en==null?"n":(en>=6?"g":"a"),"本週平均精力",
+    en!=null? nf(en,1):"—","/10",
+    "減重期精力<b>不該</b>下降。持續掉 = 缺口過大"));
+  $("#metricRow").innerHTML = mrow.join("");
+
+  /* --- 缺口卡 --- */
+  var dc = $("#deficitCard");
+  if(!dv){ dc.innerHTML = '<div class="empty">設定身體基線後，這裡會即時算出你本週累積的能量缺口。</div>'; }
+  else if(cw===1 && wk<=1){
+    dc.innerHTML = '<div class="note g"><b>W1 是基線週，不設缺口目標。</b>本週照常吃，只要記錄晨起體重、步數與入睡時間。'+
+      '你已記錄 <b class="num">'+wc.logged+'/7</b> 天。W1 結束時看 7 日平均：體重持平，該週攝取量即你的真實 TDEE，W2 起在此基礎上執行雙預算制。</div>';
+  } else {
+    var pct = wc.target>0? clamp(wc.total/wc.target*100,0,140) : 0;
+    var cls = pct>=90?"":(pct>=60?"a":"c");
+    dc.innerHTML =
+      '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px">'+
+        '<div><div class="lab tiny muted" style="font-weight:700;letter-spacing:.09em">本週累積缺口</div>'+
+        '<div class="num" style="font-size:32px;font-weight:700;line-height:1.1">'+thou(wc.total)+
+        '<span class="muted" style="font-size:15px;font-weight:600"> / '+thou(wc.target)+' kcal</span></div></div>'+
+        '<div style="margin-left:auto;text-align:right"><div class="lab tiny muted" style="font-weight:700;letter-spacing:.09em">相當於</div>'+
+        '<div class="num" style="font-size:22px;font-weight:700">'+nf(wc.kg,2)+' kg</div>'+
+        '<div class="tiny faint">目標 '+nf(wc.kgTarget,2)+' kg／週</div></div>'+
+      '</div>'+
+      '<div class="bar"><i class="'+cls+'" style="width:'+Math.min(100,pct).toFixed(0)+'%"></i></div>'+
+      '<div class="small muted" style="margin-top:10px">已記錄 <b class="num">'+wc.logged+'/7</b> 天'+
+        '　·　應酬 <b class="num">'+wc.socialN+'</b> 天'+
+        '　·　訓練 <b class="num">'+wc.trains+'/2</b> 次'+
+        '　·　依從度 <b class="num">'+(wc.adhAll? Math.round(wc.adhDone/wc.adhAll*100):0)+'%</b></div>'+
+      '<div class="tiny faint" style="margin-top:6px">缺口＝飲食規則達成度 × 該日目標缺口　＋　步數超出基線的額外消耗。這是<b>估算</b>，用來看趨勢與依從度，不是精算熱量。</div>';
+  }
+
+  /* --- 圖表 --- */
+  renderCharts();
+
+  /* --- 本週表 --- */
+  var dates = weekDates(cw);
+  var rows = dates.map(function(dt){
+    var d=S.days[dt], c=dayCalc(dt), a=adherence(dt);
+    var isToday = dt===today;
+    return '<tr'+(isToday?' class="hi"':'')+'><td>'+dt.slice(5).replace("-","/")+' <span class="faint">'+WD[wdOf(dt)]+'</span></td>'+
+      '<td>'+(d? (d.type==="social"?'<span class="pill a">應酬</span>':'<span class="pill n">平日</span>'):'<span class="faint">—</span>')+'</td>'+
+      '<td class="n">'+(d&&d.weight!=null? nf(d.weight,1):"—")+'</td>'+
+      '<td class="n">'+(d&&d.steps!=null? thou(d.steps):"—")+'</td>'+
+      '<td class="n">'+(d&&d.sleep? d.sleep:"—")+'</td>'+
+      '<td class="n">'+(d&&d.energy!=null? d.energy:"—")+'</td>'+
+      '<td class="n">'+(d? thou(c.total):"—")+'</td>'+
+      '<td class="n">'+(a[1]? Math.round(a[0]/a[1]*100)+"%":"—")+'</td></tr>';
+  }).join("");
+  $("#weekTable").innerHTML = '<thead><tr><th>日期</th><th>型態</th><th class="n">體重</th><th class="n">步數</th>'+
+    '<th class="n">入睡</th><th class="n">精力</th><th class="n">缺口</th><th class="n">依從</th></tr></thead><tbody>'+rows+'</tbody>';
+  $("#adhNote").textContent = "第 "+cw+" 週 · "+dates[0].slice(5).replace("-","/")+"–"+dates[6].slice(5).replace("-","/");
+
+  $("#redFlagBody").innerHTML = '<div class="checks">'+RED_FLAGS.map(function(f){
+    return '<div class="chk" style="cursor:default"><div class="box" style="border-color:var(--coral);background:var(--coral-soft)"></div>'+
+      '<div class="txt"><b>'+f[0]+'</b><span>'+f[1]+'</span></div></div>';
+  }).join("")+'</div><p class="small faint" style="margin-top:12px">本頁不是醫療建議。這份計畫假設你的血壓、血糖、血脂在正常範圍；若健檢有異常項目，先與醫師確認再執行。</p>';
+}
+
+function metricCard(cls,lab,val,unit,sub){
+  return '<div class="metric '+cls+'"><div class="lab">'+esc(lab)+'</div>'+
+    '<div class="val">'+esc(val)+'<small>'+esc(unit)+'</small></div><div class="sub">'+sub+'</div></div>';
+}
+function deltaTxt(v,unit,d){
+  if(v==null||isNaN(v)) return "";
+  var c = v<-0.05?"down":(v>0.05?"up":"flat");
+  var s = v>0?"+":"";
+  return '<span class="delta '+c+'">'+s+nf(v,d)+' '+unit+'</span>';
+}
+
+function renderCharts(){
+  var dv = D(), g=$("#chartGrid");
+  if(!dv){ g.innerHTML = '<div class="card pad"><div class="empty">設定基線並開始打卡後，這裡會出現四張趨勢圖。</div></div>'; return; }
+  var N=28, all=[], i;
+  for(i=0;i<N;i++) all.push(addDays(startDate(), i));
+  var xl=[]; for(i=0;i<4;i++) xl.push({i:i*7, t:"W"+(i+1), rule:i>0});
+
+  /* 體重 */
+  var wPts=[], mPts=[], vals=[];
+  all.forEach(function(dt,k){
+    var d=S.days[dt];
+    wPts.push({i:k, v:(d&&d.weight!=null)?d.weight:null});
+    var m = ma7(dt); mPts.push({i:k, v:m});
+    if(d&&d.weight!=null) vals.push(d.weight);
+  });
+  var out=[];
+  if(vals.length){
+    var lo=Math.min.apply(null,vals.concat([dv.tgtW[0]])), hi=Math.max.apply(null,vals.concat([dv.w]));
+    var pad=Math.max(0.4,(hi-lo)*0.15);
+    out.push(chartCard("體重","單日 ±1.5 kg 是正常水分波動，只看 7 日均線",
+      svgChart({n:N, yMin:lo-pad, yMax:hi+pad, dy:1, xLabels:xl, alt:"體重趨勢",
+        guides:[{y:dv.tgtW[1], color:"var(--green)"}],
+        series:[{pts:wPts, color:"var(--faint)", line:false, r:2.2},
+                {pts:mPts, color:"var(--green)", dots:false, width:2.4}]}),
+      lg("var(--faint)","單日")+lg("var(--green)","7 日均")+lg("var(--green)","一個月目標線")));
+  } else out.push(chartCard("體重","尚無資料",'<div class="empty">開始記錄晨起體重後顯示。</div>'));
+
+  /* 瘦體重 */
+  var lp=[{i:0, v:dv.lbm}], lvals=[dv.lbm];
+  for(i=1;i<=4;i++){ var L=lbmAt(i); lp.push({i:i, v:L}); if(L!=null) lvals.push(L); }
+  lvals.push(dv.lbmGuard);
+  var lo2=Math.min.apply(null,lvals)-0.5, hi2=Math.max.apply(null,lvals)+0.5;
+  out.push(chartCard("瘦體重 · 這條線決定成敗","跌破紅色護欄＝掉的是肌肉，不是脂肪",
+    svgChart({n:5, yMin:lo2, yMax:hi2, dy:1, alt:"瘦體重趨勢",
+      xLabels:[{i:0,t:"起始"},{i:1,t:"W1"},{i:2,t:"W2"},{i:3,t:"W3"},{i:4,t:"W4"}],
+      guides:[{y:dv.lbmGuard}],
+      series:[{pts:lp, color:"var(--teal)", width:2.6, r:4}]}),
+    lg("var(--teal)","瘦體重")+lg("var(--coral)","護欄 "+nf(dv.lbmGuard,1)+" kg")));
+
+  /* 步數 */
+  var sp=[], tp=[], svals=[];
+  all.forEach(function(dt,k){
+    var d=S.days[dt];
+    sp.push({i:k, v:(d&&d.steps!=null)?d.steps:null});
+    if(d&&d.steps!=null) svals.push(d.steps);
+    var w=weekOf(dt);
+    tp.push({i:k, v: (dv.baseSteps!=null && w>=1 && w<=4) ? dv.baseSteps+weekMeta(w).steps : null});
+  });
+  if(svals.length){
+    var shi=Math.max.apply(null,svals.concat(dv.baseSteps!=null?[dv.baseSteps+3000]:[]));
+    out.push(chartCard("每日步數","缺口的三分之一來自這裡，且不佔用任何時間",
+      svgChart({n:N, yMin:0, yMax:shi*1.12, dy:0, xLabels:xl, alt:"步數趨勢",
+        fmtY:function(v){ return v>=1000? (v/1000).toFixed(0)+"k":"0"; },
+        series:[{pts:sp, color:"var(--amber)", r:2.4, width:1.8},
+                {pts:tp, color:"var(--green)", dots:false, dash:"5 4", width:2}]}),
+      lg("var(--amber)","實際步數")+lg("var(--green)","本週目標線")));
+  } else out.push(chartCard("每日步數","尚無資料",'<div class="empty">W1 只要記錄現在每天實際走幾步，不用刻意改變。</div>'));
+
+  /* 入睡 */
+  var zp=[], zvals=[];
+  all.forEach(function(dt,k){
+    var d=S.days[dt], m=(d&&d.sleep)? sleepMin(d.sleep):null;
+    zp.push({i:k, v:m}); if(m!=null) zvals.push(m);
+  });
+  if(zvals.length){
+    var zlo=Math.min.apply(null,zvals.concat([22*60])), zhi=Math.max.apply(null,zvals.concat([24*60]));
+    out.push(chartCard("入睡時間","綠色區間＝23:00 ± 30 分。要收斂的是波動，不是時數",
+      svgChart({n:N, yMin:zlo-25, yMax:zhi+25, xLabels:xl, alt:"入睡時間趨勢", yTicks:4,
+        fmtY:function(v){ return minToHHMM(v); },
+        bands:[{lo:22.5*60, hi:23.5*60}],
+        series:[{pts:zp, color:"var(--teal)", r:2.6, width:1.8}]}),
+      lg("var(--teal)","入睡時間")+lg("var(--green)","目標區間")));
+  } else out.push(chartCard("入睡時間","尚無資料",'<div class="empty">W1 只要記錄實際入睡時間，不強迫改變。</div>'));
+
+  g.innerHTML = out.join("");
+}
+
+/* ---------- 今日打卡 ---------- */
+function renderDaily(){
+  var dv=D(), dt=selDate, d=S.days[dt]||{}, wk=weekOf(dt), cw=clamp(wk,1,4);
+  var type = d.type || "normal";
+
+  $("#dailyTitle").textContent = (dt===todayStr()? "今日打卡":"補登紀錄");
+  $("#dailyMeta").textContent = dt+"（週"+WD[wdOf(dt)]+"）· "+(wk===0?"計畫尚未開始":wk===5?"計畫已結束":"W"+cw);
+
+  /* 日期條 */
+  var today=todayStr(), cells=[];
+  var winStart = addDays(dt, -6);
+  for(var i=0;i<14;i++){
+    var dd = addDays(winStart, i);
+    var rec = S.days[dd], a = adherence(dd);
+    var cls = "dcell"+(dd===dt?" sel":"")+(dd>today?" fut":"")+(rec&&rec.type==="social"?" soc":"");
+    var dot = rec ? (a[1]&&a[0]/a[1]>=0.8 ? "dot f":"dot p") : "dot";
+    cells.push('<div class="'+cls+'" data-d="'+dd+'"><div class="dw">'+WD[wdOf(dd)]+'</div>'+
+      '<div class="dd">'+(+dd.slice(8))+'</div><div class="'+dot+'"></div></div>');
+  }
+  $("#dayStrip").innerHTML = cells.join("");
+
+  /* 日型態 */
+  $$("#dayTypeSeg button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.t===type?"true":"false"); });
+  $("#dayTypeHint").innerHTML = dv
+    ? (type==="social"
+      ? '目標 <b class="num">'+thou(dv.kcalS)+'</b> kcal，蛋白質盡量 100 g+，靠三條硬規則達成，不需精算。'
+      : '目標 <b class="num">'+thou(dv.kcalN)+'</b> kcal，蛋白質 <b class="num">'+dv.protein+'</b> g，完全可控。')
+    : '設定基線後顯示熱量目標。';
+
+  /* 基本欄位 */
+  $("#f_weight").value = d.weight!=null? d.weight : "";
+  $("#f_steps").value  = d.steps!=null? d.steps : "";
+  $("#f_sleep").value  = d.sleep || "";
+  $("#f_energy").value = d.energy!=null? d.energy : 6;
+  $("#energyVal").textContent = (d.energy!=null? d.energy : "—")+" /10";
+  $("#f_note").value   = d.note || "";
+
+  /* 蛋白質 */
+  $("#proteinNote").innerHTML = dv? ('目標 <b class="num">'+dv.protein+'</b> g／日 · 2.3 g/kg 瘦體重 · 記份量，不用計算') : '設定基線後顯示目標';
+  $("#proteinChecks").innerHTML = PROTEIN_SLOTS.map(function(s){
+    var on = !!(d.p&&d.p[s.id]);
+    var g = dv? Math.round(dv.protein*s.share/5)*5 : null;
+    return chkHTML("p:"+s.id, on, s.t+"　"+(g!=null? g+" g":""), s.d, "", false);
+  }).join("");
+
+  /* 飲食規則 */
+  $("#rulesTitle").textContent = type==="social"? "應酬日三條硬規則" : "平日飲食規則";
+  var list = RULES[type];
+  $("#ruleChecks").innerHTML = list.map(function(r){
+    var on = !!(d.r&&d.r[r.id]);
+    var dim = wk>=1 && wk<r.from;
+    var full = type==="social"?180:480;
+    var kc = Math.round(full*(r.w/(type==="social"?1250:480)));
+    return chkHTML("r:"+r.id, on, r.t, r.d + (dim? '　<b style="color:var(--amber)">· W'+r.from+' 才啟動，提早做算加分</b>':''),
+      "−"+kc+" kcal", dim);
+  }).join("");
+
+  /* 習慣 */
+  $("#habitChecks").innerHTML = HABITS.filter(function(h){
+    return !h.onlyWd || h.onlyWd.indexOf(wdOf(dt))>=0;
+  }).map(function(h){
+    var on = !!(d.h&&d.h[h.id]);
+    var dim = wk>=1 && wk<h.from;
+    return chkHTML("h:"+h.id, on, h.t, h.d + (dim? '　<b style="color:var(--amber)">· W'+h.from+' 才啟動</b>':''), "", dim);
+  }).join("");
+
+  /* 當日估算 */
+  var c = dayCalc(dt), a = adherence(dt);
+  var box = $("#dayEstimate");
+  if(!dv){ box.innerHTML = '<div class="empty">設定基線後，這裡會即時估算今天的能量缺口。</div>'; }
+  else {
+    var tgt = function(v){ return wk===1 ? ' <span class="muted" style="font-size:13px;font-weight:600">· 基線週不設目標</span>'
+      : '<span class="muted" style="font-size:13px;font-weight:600"> / '+thou(v)+' kcal</span>'; };
+    var neatTxt = dv.baseSteps==null
+      ? '<span class="faint">未設定基線步數，無法計算走路增量</span>'
+      : ('步數 '+(d.steps!=null? thou(d.steps):"—")+'　超出基線 '+
+         (d.steps!=null? thou(Math.max(0,d.steps-dv.baseSteps)):"—")+' 步　→ <b class="num">'+thou(c.neat)+'</b> kcal');
+    box.innerHTML =
+      '<div class="eyebrow">今日估算</div>'+
+      '<div class="grid g3" style="gap:12px">'+
+        '<div><div class="lab tiny muted" style="font-weight:700">飲食缺口</div><div class="num" style="font-size:24px;font-weight:700">'+thou(c.dietGot)+
+          tgt(c.dietTarget)+'</div></div>'+
+        '<div><div class="lab tiny muted" style="font-weight:700">走路增量</div><div class="num" style="font-size:24px;font-weight:700">'+thou(c.neat)+
+          tgt(c.neatTarget)+'</div></div>'+
+        '<div><div class="lab tiny muted" style="font-weight:700">合計 · 依從度</div><div class="num" style="font-size:24px;font-weight:700">'+thou(c.total)+
+          '<span class="muted" style="font-size:13px;font-weight:600"> kcal · '+(a[1]? Math.round(a[0]/a[1]*100):0)+'%</span></div></div>'+
+      '</div>'+
+      '<hr class="hr">'+
+      '<div class="small muted">蛋白質估計 <b class="num">'+c.proteinG+'</b> / '+dv.protein+' g'+
+      (c.proteinG < dv.protein*0.75 ? '　<span class="pill c">偏低 · 保肌風險</span>' : '　<span class="pill g">足量</span>')+
+      '　'+neatTxt+'</div>'+
+      (wk===1? '<div class="note g" style="margin-top:12px"><b>W1 不看缺口。</b>本週只要把記錄補齊、早餐蛋白質吃到目標、練滿 2 次就算成功。</div>':'');
+  }
+}
+
+function chkHTML(key, on, title, desc, kc, dim){
+  return '<label class="chk'+(dim?" dim":"")+'"><input type="checkbox" data-k="'+esc(key)+'"'+(on?" checked":"")+'>'+
+    '<span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>'+
+    '<span class="txt"><b>'+title+'</b><span>'+desc+'</span></span>'+
+    (kc? '<span class="kc">'+esc(kc)+'</span>':'')+'</label>';
+}
+
+/* ---------- 每週量測 ---------- */
+var COND = ["起床後、排尿後","空腹，未喝水","未在訓練隔天早上量","同一台機器、同一位置、赤腳"];
+function renderWeekly(){
+  var dv=D();
+  var host=$("#weeklyForms"), out=[];
+  for(var w=1;w<=4;w++){
+    var m=S.weeks[w]||{}, dates=weekDates(w), sunday=dates[6];
+    var done = m.bf!=null;
+    var wc = weekCalc(w);
+    var wt = m.weight!=null? m.weight : (wc.wN? wc.wSum/wc.wN : null);
+    var lbm = (wt!=null && m.bf!=null)? wt*(1-m.bf/100) : null;
+    out.push('<details class="acc"'+((weekOf(todayStr())===w)?" open":"")+'><summary>W'+w+
+      '　<span class="faint" style="font-weight:400">'+sunday+'（週日）</span>'+
+      (done? '　<span class="pill g">已量測</span>':'　<span class="pill n">未量測</span>')+
+      (lbm!=null&&dv? (lbm>=dv.lbmGuard? '　<span class="pill g">瘦體重守住</span>':'　<span class="pill c">瘦體重跌破護欄</span>'):'')+
+      '</summary><div class="acc-body">'+
+      '<div class="grid g3">'+
+        '<label class="field"><span>當日晨起體重 <em>kg</em></span><input class="inp wk-in" data-w="'+w+'" data-f="weight" type="number" step="0.1" value="'+(m.weight!=null?m.weight:"")+'" inputmode="decimal"></label>'+
+        '<label class="field"><span>體脂率 <em>%</em></span><input class="inp wk-in" data-w="'+w+'" data-f="bf" type="number" step="0.1" value="'+(m.bf!=null?m.bf:"")+'" inputmode="decimal"></label>'+
+        '<label class="field"><span>腰圍 <em>cm</em></span><input class="inp wk-in" data-w="'+w+'" data-f="waist" type="number" step="0.5" value="'+(m.waist!=null?m.waist:"")+'" inputmode="decimal"></label>'+
+      '</div>'+
+      '<div class="small muted" style="margin-bottom:8px;font-weight:600">固定條件確認</div>'+
+      '<div class="checks" style="margin-bottom:14px">'+COND.map(function(c,ci){
+        return '<label class="chk"><input type="checkbox" class="wk-c" data-w="'+w+'" data-i="'+ci+'"'+((m.cond&&m.cond[ci])?" checked":"")+'>'+
+        '<span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>'+
+        '<span class="txt"><b>'+c+'</b></span></label>'; }).join("")+'</div>'+
+      '<div class="grid g4">'+
+        miniStat("瘦體重", lbm!=null? nf(lbm,1)+" kg":"—", dv&&lbm!=null? ("護欄 ≥ "+nf(dv.lbmGuard,1)):"")+
+        miniStat("體重 7 日均", wc.wN? nf(wc.wSum/wc.wN,1)+" kg":"—", wc.wN+" 天資料")+
+        miniStat("平均步數", wc.stepN? thou(wc.stepSum/wc.stepN):"—", "目標 +"+thou(weekMeta(w).steps))+
+        miniStat("平均入睡", wc.sleepN? minToHHMM(wc.sleepSum/wc.sleepN):"—", "目標 23:00 ± 30 分")+
+      '</div></div></details>');
+  }
+  host.innerHTML = out.join("");
+
+  /* 總表 */
+  var rows = ['<tr><td><b>現況</b></td><td class="n">'+(dv?nf(dv.w,1):"—")+'</td><td class="n">'+(S.profile.bf!=null?nf(S.profile.bf,1)+"%":"—")+
+    '</td><td class="n"><b>'+(dv?nf(dv.lbm,1):"—")+'</b></td><td class="n">'+(S.profile.waist!=null?nf(S.profile.waist,1):"—")+
+    '</td><td class="n">'+(dv&&dv.baseSteps!=null?thou(dv.baseSteps):"—")+'</td><td class="n">—</td><td class="n">—</td></tr>'];
+  for(var k=1;k<=4;k++){
+    var mm=S.weeks[k]||{}, cc=weekCalc(k), L=lbmAt(k);
+    var bad = (dv&&L!=null&&L<dv.lbmGuard);
+    rows.push('<tr><td>W'+k+'</td>'+
+      '<td class="n">'+(cc.wN? nf(cc.wSum/cc.wN,1):"—")+'</td>'+
+      '<td class="n">'+(mm.bf!=null? nf(mm.bf,1)+"%":"—")+'</td>'+
+      '<td class="n"'+(bad?' style="color:var(--coral);font-weight:700"':'')+'>'+(L!=null? nf(L,1):"—")+'</td>'+
+      '<td class="n">'+(mm.waist!=null? nf(mm.waist,1):"—")+'</td>'+
+      '<td class="n">'+(cc.stepN? thou(cc.stepSum/cc.stepN):"—")+'</td>'+
+      '<td class="n">'+(cc.sleepN? minToHHMM(cc.sleepSum/cc.sleepN):"—")+'</td>'+
+      '<td class="n">'+(cc.enN? nf(cc.enSum/cc.enN,1):"—")+'</td></tr>');
+  }
+  $("#measureTable").innerHTML='<thead><tr><th>週次</th><th class="n">體重 7日均</th><th class="n">體脂率</th><th class="n">瘦體重</th>'+
+    '<th class="n">腰圍</th><th class="n">平均步數</th><th class="n">平均入睡</th><th class="n">平均精力</th></tr></thead><tbody>'+rows.join("")+'</tbody>';
+}
+function miniStat(l,v,s){
+  return '<div class="metric"><div class="lab">'+esc(l)+'</div><div class="val" style="font-size:20px">'+esc(v)+
+    '</div><div class="sub">'+esc(s||"")+'</div></div>';
+}
+
+/* ---------- 訓練 ---------- */
+function renderTrain(){
+  $("#trainA").innerHTML = '<thead><tr><th>動作</th><th>部位</th><th class="n">次數</th><th>降階理由</th></tr></thead><tbody>'+
+    TRAIN_A.map(function(r){ return '<tr><td><b>'+r[0]+'</b></td><td class="muted">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="muted small">'+r[3]+'</td></tr>'; }).join("")+'</tbody>';
+  $("#trainB").innerHTML = '<thead><tr><th>動作</th><th>部位</th><th class="n">次數</th></tr></thead><tbody>'+
+    TRAIN_B.map(function(r){ return '<tr><td><b>'+r[0]+'</b></td><td class="muted">'+r[1]+'</td><td class="n">'+r[2]+'</td></tr>'; }).join("")+'</tbody>';
+  var rows=[], done=0, tot=0;
+  for(var w=1;w<=4;w++){
+    weekDates(w).forEach(function(dt){
+      if([2,4].indexOf(wdOf(dt))<0) return;
+      tot++;
+      var d=S.days[dt], ok=!!(d&&d.h&&d.h.train);
+      if(ok) done++;
+      rows.push('<tr><td>W'+w+'</td><td>'+dt+' <span class="faint">週'+WD[wdOf(dt)]+'</span></td>'+
+        '<td>'+(w<=2?"降階版":"進階版")+'</td>'+
+        '<td>'+(ok?'<span class="pill g">已完成</span>': (dt<todayStr()? '<span class="pill c">未完成</span>':'<span class="pill n">未到</span>'))+'</td></tr>');
+    });
+  }
+  $("#trainLog").innerHTML='<thead><tr><th>週次</th><th>日期</th><th>課表</th><th>狀態</th></tr></thead><tbody>'+rows.join("")+'</tbody>';
+  $("#trainCount").innerHTML = '已完成 <b class="num">'+done+'</b> / '+tot+' 次　·　達標線 6 次（75%）';
+}
+
+/* ---------- 設定 ---------- */
+function renderSet(){
+  var p=S.profile, dv=D();
+  $("#p_height").value=p.height!=null?p.height:"";
+  $("#p_weight").value=p.weight!=null?p.weight:"";
+  $("#p_bf").value=p.bf!=null?p.bf:"";
+  $("#p_birth").value=p.birth||"";
+  $("#p_waist").value=p.waist!=null?p.waist:"";
+  $("#p_basesteps").value=p.baseSteps!=null?p.baseSteps:"";
+  $("#p_social").value=p.social!=null?p.social:2.5;
+  $("#p_pal").value=String(p.pal||1.35);
+  $("#p_start").value=p.start||"2026-08-18";
+
+  var box=$("#derivedBox");
+  if(!dv){ box.innerHTML='<div class="empty">填入體重與體脂率後，這裡會列出全部推導參數。</div>'; }
+  else{
+    box.innerHTML =
+      '<div class="grid g4" style="margin-bottom:14px">'+
+        miniStat("瘦體重 LBM", nf(dv.lbm,1)+" kg", "= 體重 × (1 − 體脂率)")+
+        miniStat("BMR", thou(dv.bmr)+" kcal", "Katch-McArdle：370 + 21.6 × LBM")+
+        miniStat("TDEE", thou(dv.tdee)+" kcal", "BMR × "+nf(dv.pal,2)+" 活動係數")+
+        miniStat("瘦體重護欄", "≥ "+nf(dv.lbmGuard,1)+" kg", "不可跌破，最高優先")+
+      '</div>'+
+      '<div class="table-wrap"><table><thead><tr><th>參數</th><th class="n">數值</th><th>依據</th></tr></thead><tbody>'+
+      tr("平日熱量預算", thou(dv.kcalN)+" kcal", "TDEE − 480，每日缺口的主軸") +
+      tr("應酬日熱量預算", thou(dv.kcalS)+" kcal", "TDEE − 180，靠三條硬規則達成，不需精算") +
+      tr("蛋白質", dv.protein+" g", "2.3 g/kg 瘦體重。減重期保肌關鍵") +
+      tr("脂肪", dv.fatG+" g", "0.75 g/kg 體重。<b>不可再低</b>——睪固酮合成需要膳食脂肪") +
+      tr("碳水", dv.carb+" g", "剩餘額度，優先放早餐與訓練日") +
+      tr("走路增量價值", nf(dv.neatPerStep*1000,1)+" kcal / 千步", "＋3,000 步 ≈ "+thou(dv.neat3000)+" kcal／日") +
+      tr("週缺口目標", thou(dv.wkDeficit)+" kcal", nf(dv.normalD,1)+" 平日 × 480 ＋ "+nf(dv.social,1)+" 應酬日 × 180 ＋ 7 × 走路") +
+      tr("預期速率", nf(dv.kgWeek,2)+" kg / 週", "一個月約 "+nf(dv.kgMonth,1)+" kg（缺口 ÷ 7,700）") +
+      tr("一個月體重目標", nf(dv.tgtW[0],1)+"–"+nf(dv.tgtW[1],1)+" kg", "起始 "+nf(dv.w,1)+" kg") +
+      tr("一個月體脂目標", nf(dv.tgtBf[0],1)+"–"+nf(dv.tgtBf[1],1)+"%", "起始 "+nf(S.profile.bf,1)+"%") +
+      (dv.bmi? tr("BMI", nf(dv.bmi,1), "參考值，體脂率比它準得多"):"") +
+      '</tbody></table></div>';
+  }
+  renderSyncUI();
+}
+function tr(a,b,c){ return '<tr><td><b>'+a+'</b></td><td class="n">'+b+'</td><td class="muted small">'+c+'</td></tr>'; }
+/* ---------- 計畫全文 ---------- */
+function B(v,unit){
+  if(v==null||v===""||(typeof v==="number"&&isNaN(v))) return '<span class="bind unset">—</span>';
+  return '<span class="bind">'+esc(String(v))+(unit?" "+unit:"")+'</span>';
+}
+function renderPlan(){
+  var dv=D(), p=S.profile;
+  var social = dv? dv.social : (p.social||2.5);
+  var normalD = dv? dv.normalD : 7-social;
+  var h = [];
+
+  h.push(acc("為什麼是這個結構：應酬頻率決定了其他所有設計", true,
+    '<p>你一週有 '+B(nf(social,1))+' 次應酬，意味著只有 '+B(nf(normalD,1))+' 天的飲食是完全可控的。'+
+    '如果只靠「每天少吃」，在這個頻率下一個月頂多掉 1.2 kg——而且是在應酬日也嚴格控制的前提下。</p>'+
+    '<p>所以這份計畫改成<b>兩路並行</b>：</p>'+
+    '<div class="grid g2" style="margin:14px 0">'+
+      '<div class="metric g"><div class="lab">飲食缺口</div><div class="val">'+
+        (dv? thou(normalD*480+social*180):"—")+'<small>kcal / 週</small></div>'+
+        '<div class="sub">平日 '+B(dv?thou(dv.kcalN):null)+' kcal ／ 應酬日 '+B(dv?thou(dv.kcalS):null)+' kcal</div></div>'+
+      '<div class="metric a"><div class="lab">活動缺口</div><div class="val">'+
+        (dv? thou(7*dv.neat3000):"—")+'<small>kcal / 週</small></div>'+
+        '<div class="sub">每日走路 +3,000 步，<b>不佔用任何時間</b></div></div>'+
+    '</div>'+
+    '<p><b>為什麼是走路而不是多練兩次重訓：</b>重訓 30 分鐘約消耗 150–200 kcal，且需要晚間可支配時段的完整區塊。'+
+    '走路可以<b>寄生在既有行程裡</b>——電梯改樓梯、通勤提前一站下車、電話會議站著走著講、週末推嬰兒車。'+
+    '它不需要你「排」任何時間，這正好對應白天全滿的工作結構。</p>'+
+    '<div class="note g"><b>週缺口目標 '+(dv?thou(dv.wkDeficit):"—")+' kcal</b>　＝　'+
+    nf(normalD,1)+' 平日 × 480　＋　'+nf(social,1)+' 應酬日 × 180　＋　7 × 走路增量。'+
+    '相當於每週 '+(dv?nf(dv.kgWeek,2):"—")+' kg，一個月約 '+(dv?nf(dv.kgMonth,1):"—")+' kg。</div>'));
+
+  h.push(acc("本月目標數字", false,
+    '<div class="table-wrap"><table><thead><tr><th>指標</th><th class="n">現況</th><th class="n">一個月目標</th><th>說明</th></tr></thead><tbody>'+
+    '<tr><td>體重</td><td class="n">'+B(dv?nf(dv.w,1):null)+'</td><td class="n">'+
+      (dv? B(nf(dv.tgtW[0],1)+"–"+nf(dv.tgtW[1],1)):B(null))+'</td><td class="muted small">最不重要，波動最大，最容易誤導</td></tr>'+
+    '<tr><td>體脂率</td><td class="n">'+B(p.bf!=null?nf(p.bf,1)+"%":null)+'</td><td class="n">'+
+      (dv? B(nf(dv.tgtBf[0],1)+"–"+nf(dv.tgtBf[1],1)+"%"):B(null))+'</td><td class="muted small">−1.2～1.5 個百分點</td></tr>'+
+    '<tr><td><b>瘦體重</b></td><td class="n"><b>'+B(dv?nf(dv.lbm,1):null)+'</b></td><td class="n"><b>'+
+      (dv? B("≥ "+nf(dv.lbmGuard,1)):B(null))+'</b></td><td class="muted small"><b>不可跌破，最高優先</b></td></tr>'+
+    '<tr><td>腰圍</td><td class="n">'+B(p.waist!=null?nf(p.waist,1):null)+'</td><td class="n">'+
+      (p.waist!=null? B(nf(p.waist-2,1)+"–"+nf(p.waist-1.5,1)):B(null))+'</td><td class="muted small">內臟脂肪最實用的單一指標，台灣男性建議 &lt; 90 cm</td></tr>'+
+    '<tr><td>入睡時間</td><td class="n">浮動</td><td class="n">'+B("23:00 ± 30 分")+'</td><td class="muted small">收斂波動，時數已足夠</td></tr>'+
+    '<tr><td>訓練完成</td><td class="n">0</td><td class="n">'+B("6 / 8 次")+'</td><td class="muted small">75% 即達標</td></tr>'+
+    '<tr><td>每日步數</td><td class="n">'+B(p.baseSteps!=null?thou(p.baseSteps):null)+'</td><td class="n">'+
+      (p.baseSteps!=null? B(thou(p.baseSteps+3000)):B("基線 +3,000"))+'</td><td class="muted small">缺口的三分之一來自這裡</td></tr>'+
+    '</tbody></table></div>'+
+    '<div class="note c" style="margin-top:14px"><b>成敗判準不是體重，是瘦體重。</b>'+
+    '若一個月後體重掉 3 kg 但瘦體重跌破護欄，那是失敗的減重——掉 1.6 kg 肌肉等於基礎代謝每日再降 35–50 kcal，'+
+    '為下個月的停滯與復胖預先埋線。</div>'));
+
+  h.push(acc("支柱 1 · 週總量熱量制（★★★ 主軸）", false,
+    '<h4>兩種日子，兩套預算</h4>'+
+    '<div class="table-wrap" style="margin-bottom:14px"><table><thead><tr><th>日子</th><th class="n">熱量</th><th class="n">蛋白質</th><th>說明</th></tr></thead><tbody>'+
+    '<tr><td><b>平日</b>（'+nf(normalD,1)+' 天）</td><td class="n">'+B(dv?thou(dv.kcalN):null)+'</td><td class="n">'+B(dv?dv.protein+" g":null)+
+      '</td><td class="muted small">完全可控，照下方配置</td></tr>'+
+    '<tr><td><b>應酬日</b>（'+nf(social,1)+' 天）</td><td class="n">'+B(dv?thou(dv.kcalS):null)+'</td><td class="n">盡量 100 g+</td>'+
+      '<td class="muted small">靠三條規則達成，不需精算</td></tr>'+
+    '</tbody></table></div>'+
+    '<h4>平日巨量營養素配置</h4>'+
+    '<div class="table-wrap" style="margin-bottom:14px"><table><thead><tr><th>營養素</th><th class="n">目標</th><th class="n">熱量</th><th>依據</th></tr></thead><tbody>'+
+    '<tr><td>蛋白質</td><td class="n">'+B(dv?dv.protein+" g":null)+'</td><td class="n">'+(dv?thou(dv.protein*4):"—")+
+      '</td><td class="muted small">2.3 g/kg 瘦體重。減重期保肌關鍵，中年後合成效率下降</td></tr>'+
+    '<tr><td>脂肪</td><td class="n">'+B(dv?dv.fatG+" g":null)+'</td><td class="n">'+(dv?thou(dv.fatG*9):"—")+
+      '</td><td class="muted small">0.75 g/kg 體重。<b>不可再低</b>——睪固酮合成需要膳食脂肪</td></tr>'+
+    '<tr><td>碳水</td><td class="n">'+B(dv?dv.carb+" g":null)+'</td><td class="n">'+(dv?thou(dv.carb*4):"—")+
+      '</td><td class="muted small">剩餘額度，優先放早餐與訓練日</td></tr>'+
+    '</tbody></table></div>'+
+    '<h4>蛋白質拆解（記份量，不用計算）</h4>'+
+    '<div class="table-wrap" style="margin-bottom:14px"><table><thead><tr><th>時段</th><th class="n">目標</th><th>作法</th></tr></thead><tbody>'+
+    PROTEIN_SLOTS.map(function(s){
+      return '<tr><td>'+s.t+'</td><td class="n">'+B(dv? Math.round(dv.protein*s.share/5)*5+" g":null)+
+        '</td><td class="muted small">'+s.d+'</td></tr>'; }).join("")+
+    '</tbody></table></div>'+
+    '<h4>午餐降碳（兼顧下午精力）</h4>'+
+    '<ul><li>白飯／麵／麵包減半，蔬菜與蛋白質補足份量</li>'+
+    '<li>進食順序：<b>先吃菜與肉，最後吃澱粉</b></li></ul>'+
+    '<div class="mech"><b>機制</b>　壓平餐後血糖曲線。成本是零——不用換餐廳、不用備餐、不用跟同事解釋。</div>'));
+
+  h.push(acc("應酬日三條硬規則（本計畫最高槓桿的一頁）", false,
+    '<p>一場不控制的應酬約 2,500–3,000 kcal。以下三條可壓到 '+B(dv?thou(dv.kcalS):null)+' kcal，且不影響社交表現。</p>'+
+    '<h4>規則 1 · 酒——最多 2 杯，且選對種類</h4>'+
+    '<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th>選擇</th><th class="n">每杯約</th><th class="n">一晚 3–4 杯</th></tr></thead><tbody>'+
+    '<tr><td>啤酒（500 ml）</td><td class="n">200 kcal</td><td class="n">600–800</td></tr>'+
+    '<tr><td>調酒</td><td class="n">250–400 kcal</td><td class="n">750–1,600</td></tr>'+
+    '<tr class="hi"><td><b>紅酒（150 ml）</b></td><td class="n"><b>125 kcal</b></td><td class="n">375–500</td></tr>'+
+    '<tr class="hi"><td><b>威士忌 + 無糖氣泡水</b></td><td class="n"><b>100 kcal</b></td><td class="n">300–400</td></tr>'+
+    '</tbody></table></div>'+
+    '<div class="note g">改喝紅酒或烈酒加無糖氣泡水，<b>單這一項一晚就省 400–800 kcal</b>。杯數不變，社交上完全看不出差別。</div>'+
+    '<h4>規則 2 · 桌菜——先夾菜與蛋白質，跳過三樣</h4>'+
+    '<p>跳過：<b>主食（飯／麵／小饅頭）、炸物、甜點</b>。這三樣是桌菜熱量密度最高、飽足感最低的部分。菜和肉可以照吃，不需要客氣。</p>'+
+    '<h4>規則 3 · 當日白天預算轉移</h4>'+
+    '<ul><li>早餐照常高蛋白（'+B(dv? Math.round(dv.protein*0.286/5)*5+" g":null)+'）</li>'+
+    '<li><b>午餐只吃菜與肉，不吃澱粉</b> → 省下 300–400 kcal</li>'+
+    '<li>把這個額度留給晚上</li></ul>'+
+    '<div class="note c"><b>事後不補償性節食。</b>應酬隔天不要刻意少吃來「補回來」——那會觸發下一輪暴食，'+
+    '而且對週總量的幫助遠小於它造成的心理成本。隔天回到平日預算就好。</div>'));
+
+  h.push(acc("熱量校準流程（不要跳過）", false,
+    '<p>TDEE 估算有 ±150 kcal 誤差。</p>'+
+    '<ul><li><b>W1 先不節食</b>，照常吃，只記錄晨起體重</li>'+
+    '<li>W1 結束看 7 日平均：體重持平 → 該週攝取量即真實 TDEE</li>'+
+    '<li>W2 起在此基礎上執行雙預算制</li></ul>'+
+    '<div class="note">沒有基線就沒有校準，第三週你會不知道該調高還是調低。</div>'));
+
+  h.push(acc("支柱 2 · 活動量（★★★ 零時間成本）", false,
+    '<h4>走路增量：缺口的三分之一</h4>'+
+    '<p>目標是在目前基線上<b>每天多走 3,000 步</b>，約 '+B(dv?thou(dv.neat3000)+" kcal":null)+'／日。'+
+    'W1 先只做一件事：<b>用手機記錄現在每天實際走幾步</b>，不刻意改變。有了基線才知道要加多少。</p>'+
+    '<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th>情境</th><th>作法</th><th class="n">約增加</th></tr></thead><tbody>'+
+    '<tr><td>辦公大樓</td><td>電梯改樓梯（至少下樓全走）</td><td class="n">300–800 步</td></tr>'+
+    '<tr><td>通勤</td><td>提前一站下車，或停遠一點</td><td class="n">800–1,500 步</td></tr>'+
+    '<tr><td>電話會議</td><td>站著或邊走邊講</td><td class="n">500–1,000 步</td></tr>'+
+    '<tr><td>午餐</td><td>走到稍遠的店，不叫外送</td><td class="n">600–1,200 步</td></tr>'+
+    '<tr class="hi"><td><b>週末推嬰兒車</b></td><td>40–60 分鐘戶外</td><td class="n"><b>4,000–6,000 步</b></td></tr>'+
+    '</tbody></table></div>'+
+    '<div class="note g"><b>週末推嬰兒車是投報率最高的一格。</b>同時完成活動量與陪伴，不佔用任何額外時間。'+
+    '單次 60 分鐘散步約 250–300 kcal，跟一次重訓的消耗相當。</div>'+
+    '<h4>阻力訓練 2 次／週：保肌，不是燃脂</h4>'+
+    '<p>時段固定在<b>週二、週四 20:30–21:00</b>。21:00 結束到就寢有 2 小時緩衝，不影響入睡。'+
+    '這兩次不是用來燒熱量的（30 分鐘 150–200 kcal，遠不如少喝一杯調酒），'+
+    '它唯一的任務是<b>守住 '+B(dv?nf(dv.lbm,1)+" kg":null)+' 瘦體重</b>，讓缺口只吃脂肪。完整課表見「訓練課表」頁。</p>'));
+
+  h.push(acc("支柱 3 · 睡眠穩定度（★★☆）", false,
+    '<p><b>你的睡眠不是問題。</b>7–8 小時、固定 7:00 起床、品質尚可——在 12 小時工時＋幼兒的族群裡屬少見的良好狀態。'+
+    '不需要「修復」，只需要「收斂」。</p>'+
+    '<h4>唯一缺陷：入睡浮動 2 小時</h4>'+
+    '<p>同一週在 7–9 小時間擺盪，等於每週製造多次小型時差。晝夜節律偏好的是<b>穩定</b>，不是長。</p>'+
+    '<div class="note t"><b>目標：入睡收斂到 23:00 ± 30 分鐘。</b>選 23:00 因為它落在現有範圍的中位，不需大幅改變習慣；'+
+    '對應睡眠 8 小時；且這條線同時保護你的個人時間不被無限延長。</div>'+
+    '<h4>咖啡因斷點：15:00</h4>'+
+    '<div class="mech"><b>機制</b>　咖啡因半衰期 5–6 小時，15:00 那杯到 23:00 仍有約 25% 殘留。'+
+    '含茶、可樂、部分能量飲。「品質尚可」的自覺可能還有上修空間——這是最低成本的測試。</div>'+
+    '<h4>酒精與睡眠（與應酬直接相關）</h4>'+
+    '<ul><li>睡前 3 小時內不再飲用</li></ul>'+
+    '<div class="mech"><b>機制</b>　酒精加速入睡但顯著抑制後半夜深睡與快速動眼期。這是「睡滿 8 小時仍然疲倦」最常見的單一原因。</div>'+
+    '<div class="note g">應酬日規則 1（改喝紅酒／烈酒加氣泡水、限 2 杯）<b>同時解決熱量與睡眠兩個問題</b>——'+
+    '這是整份計畫裡唯一一個一石二鳥的動作，優先做它。</div>'));
+
+  h.push(acc("四週疊加節奏", false,
+    '<p>一次只改一個決策點。四週後你有一組不需思考的習慣，而不是一份放棄的清單。</p>'+
+    '<div class="table-wrap"><table><thead><tr><th>週次</th><th>飲食</th><th>活動</th><th>睡眠</th></tr></thead><tbody>'+
+    WEEK_META.map(function(m){
+      var ds=weekDates(m.n);
+      var now = weekOf(todayStr())===m.n;
+      return '<tr'+(now?' class="hi"':'')+'><td><b>W'+m.n+'</b><br><span class="faint tiny">'+
+        ds[0].slice(5).replace("-","/")+'–'+ds[6].slice(5).replace("-","/")+'</span></td>'+
+        '<td class="small">'+esc(m.diet)+'</td><td class="small">'+esc(m.act)+'</td><td class="small">'+esc(m.sleep)+'</td></tr>';
+    }).join("")+'</tbody></table></div>'+
+    '<div class="note g" style="margin-top:14px"><b>W2 先做「酒」而不是別的：</b>它同時砍熱量與救睡眠，'+
+    '且執行成本最低（只是換一種杯子裡的東西），是四週裡投報率最高的單一動作。</div>'));
+
+  h.push(acc("追蹤原則", false,
+    '<h4>每日（30 秒）</h4>'+
+    '<div class="table-wrap" style="margin-bottom:14px"><table><thead><tr><th>項目</th><th>記錄方式</th><th>判讀原則</th></tr></thead><tbody>'+
+    '<tr><td><b>晨起體重</b></td><td class="muted small">起床上廁所後、進食前</td><td class="muted small"><b>只看 7 日平均。</b>單日 ±1.5 kg 是正常水分波動</td></tr>'+
+    '<tr><td>昨晚入睡時間</td><td class="muted small">大約即可</td><td class="muted small">本月要收斂的就是這個數字</td></tr>'+
+    '<tr><td>今日步數</td><td class="muted small">手機自動</td><td class="muted small">不用管，週末看平均</td></tr>'+
+    '<tr><td>今日精力（1–10）</td><td class="muted small">憑感覺打一個數字</td><td class="muted small">減重期精力<b>不該</b>下降。持續掉 = 缺口過大</td></tr>'+
+    '</tbody></table></div>'+
+    '<h4>每週日晨起：體脂量測（四項固定條件）</h4>'+
+    '<ul>'+COND.map(function(c,i){ return '<li>'+(i+1)+'. '+c+'</li>'; }).join("")+'</ul>'+
+    '<div class="note"><b>判讀原則：不看單週絕對值，看四週趨勢線。</b>若某週體脂突然跳動 2%，那幾乎確定是水分變化，不是脂肪——'+
+    '前一晚應酬喝酒、吃鹹、或訓練後發炎都會造成。不要據此調整計畫。</div>'));
+
+  h.push(acc("下一版觸發條件", false,
+    '<p>回報以下任一項，就可以出 v1.1：</p>'+
+    '<ul><li><b>W1 基線數據</b>（7 日平均體重、腰圍、日均步數、實際入睡分布）→ 校準真實 TDEE 與步數增量目標</li>'+
+    '<li><b>W2 結束的體脂率</b> → 驗證瘦體重是否守住，<b>這是最重要的中期檢核點</b></li>'+
+    '<li>執行卡關（應酬壓不下來、練不動、吃不到蛋白質量、幼兒夜醒頻繁）→ 調整而非放棄</li></ul>'+
+    '<div class="note t">在「設定 · 同步」頁可以把每日與每週資料匯出成 CSV，直接貼進 Google Sheet 或交給我做校準。</div>'));
+
+  h.push(acc("與 v1.0 原始文件的兩處修正", false,
+    '<p>把文件轉成會自動計算的工具時，有兩個數字對不上，這裡說明我怎麼處理：</p>'+
+    '<h4>1. 走路增量的熱量被高估了</h4>'+
+    '<p>原文寫「每天多走 3,000 步 ≈ +250–300 kcal」。實際上步行約消耗 <b>0.5 kcal / kg / km</b>，'+
+    '3,000 步約 2.2–2.4 km，以 '+B(dv?nf(dv.w,0)+" kg":"你的體重")+' 計算約 '+B(dv?thou(dv.neat3000)+" kcal":null)+'／日，'+
+    '大約是原文的一半。本站一律用實算值。</p>'+
+    '<h4>2. 飲食缺口的數字反而被低估了</h4>'+
+    '<p>原文的「飲食缺口 2,300 kcal／週」低於它自己列出的雙預算制實際值（'+
+    (dv? thou(normalD*480+social*180):"—")+' kcal）。兩處誤差方向相反，大致互相抵消，'+
+    '<b>最終週缺口 '+(dv?thou(dv.wkDeficit):"—")+' kcal 與原文的 3,300 kcal 幾乎一致</b>，'+
+    '預期速率也仍落在每月 1.4–1.8 kg。結論不變，但過程數字改成可驗算的。</p>'+
+    '<div class="note">另外：原文「非刻意體重快速下降 &gt; 4.3 kg／月」的紅旗門檻已改為「一個月超過體重的 5%」，'+
+    '這樣換人用也成立。</div>'));
+
+  $("#planBody").innerHTML = h.join("");
+}
+function acc(title, open, body){
+  return '<details class="acc"'+(open?" open":"")+'><summary>'+esc(title)+'</summary><div class="acc-body prose">'+body+'</div></details>';
+}
+
+/* ==================================================================
+   6. 雲端同步
+   ================================================================== */
+function b64e(s){ return btoa(unescape(encodeURIComponent(s))); }
+function b64d(s){ return decodeURIComponent(escape(atob(s))); }
+function syncBadge(cls, txt){
+  var el=$("#syncDot"); el.className="sync-dot "+cls; $("#syncTxt").textContent=txt;
+}
+function renderSyncUI(){
+  var st=$("#syncStatus");
+  if(!SYNC){ syncBadge("","本機"); st.innerHTML='目前<b>只存在這台裝置的瀏覽器</b>。清除瀏覽器資料會遺失紀錄，建議至少定期匯出 JSON 備份。'; $("#s_code").value=""; return; }
+  syncBadge("ok","已同步");
+  st.innerHTML='已連結同步空間 <b class="num">'+esc(SYNC.s.slice(0,8))+'…</b>　·　'+esc(SYNC.u.replace(/^https?:\/\//,""))+
+    (SYNC.last? '　·　最後同步 '+new Date(SYNC.last).toLocaleString("zh-TW"):'');
+}
+function rpc(fn, body){
+  if(!SYNC) return Promise.reject(new Error("未設定同步"));
+  return fetch(SYNC.u.replace(/\/+$/,"")+"/rest/v1/rpc/"+fn, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "apikey":SYNC.k, "Authorization":"Bearer "+SYNC.k },
+    body: JSON.stringify(body)
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){ throw new Error("HTTP "+r.status+" "+t.slice(0,140)); });
+    return r.json();
+  });
+}
+function mergeDoc(remote){
+  if(!remote || typeof remote!=="object") return false;
+  var changed=false, k;
+  if(remote.profile && (remote.profile.ts||0) > (S.profile.ts||0)){ S.profile=remote.profile; changed=true; }
+  if(remote.days) for(k in remote.days){ if(!remote.days.hasOwnProperty(k)) continue;
+    var a=S.days[k], b=remote.days[k];
+    if(!a || (b.ts||0) > (a.ts||0)){ S.days[k]=b; changed=true; } }
+  if(remote.weeks) for(k in remote.weeks){ if(!remote.weeks.hasOwnProperty(k)) continue;
+    var c=S.weeks[k], e=remote.weeks[k];
+    if(!c || (e.ts||0) > (c.ts||0)){ S.weeks[k]=e; changed=true; } }
+  return changed;
+}
+function pull(silent){
+  if(!SYNC) return Promise.resolve();
+  syncBadge("busy","同步中");
+  return rpc("ep_pull", {p_key: SYNC.s}).then(function(doc){
+    var changed = mergeDoc(doc);
+    SYNC.last = Date.now(); localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+    if(changed){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} renderAll(); }
+    syncBadge("ok","已同步"); renderSyncUI();
+    if(!silent) toast(changed? "已從雲端更新":"雲端已是最新");
+  }).catch(function(e){
+    syncBadge("err","同步失敗");
+    if(!silent) toast("拉取失敗："+e.message);
+    else console.warn("pull failed", e);
+  });
+}
+var pushTimer=null;
+function schedulePush(){
+  if(!SYNC) return;
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(function(){ push(true); }, 1200);
+}
+function push(silent){
+  if(!SYNC) return Promise.resolve();
+  syncBadge("busy","同步中");
+  return rpc("ep_push", {p_key: SYNC.s, p_doc:{profile:S.profile, days:S.days, weeks:S.weeks, ts:Date.now()}})
+    .then(function(){
+      SYNC.last=Date.now(); localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+      syncBadge("ok","已同步"); renderSyncUI();
+      if(!silent) toast("已上傳到雲端");
+    }).catch(function(e){
+      syncBadge("err","同步失敗");
+      if(!silent) toast("上傳失敗："+e.message); else console.warn("push failed", e);
+    });
+}
+
+/* ==================================================================
+   7. 匯出 / 匯入
+   ================================================================== */
+function dl(name, text, mime){
+  var blob=new Blob(["﻿"+text], {type:(mime||"text/csv")+";charset=utf-8"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+}
+function csvCell(v){
+  if(v==null) return "";
+  var s=String(v);
+  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+function exportDaysCsv(){
+  var head=["日期","週次","星期","日型態","晨起體重kg","步數","入睡時間","精力",
+            "蛋白早","蛋白午","蛋白晚","蛋白補","規則1","規則2","規則3",
+            "訓練","入睡達標","咖啡因15前","睡前3hr無酒","估計缺口kcal","依從度","備註"];
+  var rows=[head.map(csvCell).join(",")];
+  Object.keys(S.days).sort().forEach(function(dt){
+    var d=S.days[dt], c=dayCalc(dt), a=adherence(dt);
+    var list=RULES[d.type||"normal"];
+    rows.push([dt, "W"+weekOf(dt), "週"+WD[wdOf(dt)], d.type==="social"?"應酬日":"平日",
+      d.weight, d.steps, d.sleep, d.energy,
+      yn(d.p&&d.p.b), yn(d.p&&d.p.l), yn(d.p&&d.p.d), yn(d.p&&d.p.x),
+      yn(d.r&&d.r[list[0].id]), yn(d.r&&d.r[list[1].id]), yn(d.r&&d.r[list[2].id]),
+      yn(d.h&&d.h.train), yn(d.h&&d.h.sleepOn), yn(d.h&&d.h.caffeine), yn(d.h&&d.h.noLateEtOH),
+      Math.round(c.total), a[1]? Math.round(a[0]/a[1]*100)+"%":"", d.note].map(csvCell).join(","));
+  });
+  if(rows.length===1){ toast("還沒有每日紀錄"); return; }
+  dl("精力計畫_每日_"+todayStr()+".csv", rows.join("\r\n"));
+}
+function yn(v){ return v?1:0; }
+function exportWeeksCsv(){
+  var dv=D();
+  var head=["週次","起","訖","體重7日均","體脂率%","瘦體重kg","護欄kg","腰圍cm","平均步數","平均入睡","平均精力","記錄天數","應酬天數","訓練次數","累積缺口kcal","目標缺口kcal","依從度"];
+  var rows=[head.map(csvCell).join(",")];
+  for(var w=1;w<=4;w++){
+    var m=S.weeks[w]||{}, c=weekCalc(w), ds=weekDates(w), L=lbmAt(w);
+    rows.push([ "W"+w, ds[0], ds[6],
+      c.wN? r1(c.wSum/c.wN):"", m.bf!=null?m.bf:"", L!=null? r1(L):"", dv? dv.lbmGuard:"",
+      m.waist!=null?m.waist:"", c.stepN? Math.round(c.stepSum/c.stepN):"",
+      c.sleepN? minToHHMM(c.sleepSum/c.sleepN):"", c.enN? r1(c.enSum/c.enN):"",
+      c.logged, c.socialN, c.trains, Math.round(c.total), Math.round(c.target),
+      c.adhAll? Math.round(c.adhDone/c.adhAll*100)+"%":"" ].map(csvCell).join(","));
+  }
+  dl("精力計畫_每週_"+todayStr()+".csv", rows.join("\r\n"));
+}
+/* ==================================================================
+   8. 事件
+   ================================================================== */
+function ensureDay(dt){
+  if(!S.days[dt]) S.days[dt] = { type:"normal", p:{}, r:{}, h:{}, ts:0 };
+  var d=S.days[dt];
+  if(!d.p) d.p={}; if(!d.r) d.r={}; if(!d.h) d.h={};
+  return d;
+}
+function touchDay(dt){ S.days[dt].ts = Date.now(); save(); }
+
+function show(view){
+  $$(".tab").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.view===view?"true":"false"); });
+  $$(".view").forEach(function(v){ v.classList.toggle("on", v.id==="v-"+view); });
+  if(location.hash.slice(1)!==view) history.replaceState(null,"","#"+view);
+  window.scrollTo({top:0, behavior:"instant"});
+}
+
+function bind(){
+  $$(".tab").forEach(function(b){ b.addEventListener("click", function(){ show(b.dataset.view); }); });
+  document.addEventListener("click", function(e){
+    var g=e.target.closest("[data-goto]"); if(g) show(g.dataset.goto);
+  });
+
+  /* 主題 */
+  $("#themeBtn").addEventListener("click", function(){
+    var cur = document.documentElement.getAttribute("data-theme");
+    var next = cur==="dark" ? "light" : (cur==="light" ? "" : "dark");
+    if(next) document.documentElement.setAttribute("data-theme", next);
+    else document.documentElement.removeAttribute("data-theme");
+    try{ localStorage.setItem("ep4w_theme", next); }catch(err){}
+    toast(next==="dark"?"深色":next==="light"?"淺色":"跟隨系統");
+  });
+  $("#syncDot").addEventListener("click", function(){ if(SYNC){ pull(); } else { show("set"); } });
+
+  /* 日期條 */
+  $("#dayStrip").addEventListener("click", function(e){
+    var c=e.target.closest(".dcell"); if(!c) return;
+    selDate = c.dataset.d; renderDaily();
+  });
+
+  /* 日型態 */
+  $("#dayTypeSeg").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    var d=ensureDay(selDate); d.type=b.dataset.t; touchDay(selDate); renderDaily(); renderDash();
+  });
+
+  /* 勾選 */
+  ["#proteinChecks","#ruleChecks","#habitChecks"].forEach(function(sel){
+    $(sel).addEventListener("change", function(e){
+      var t=e.target; if(t.tagName!=="INPUT") return;
+      var parts=(t.dataset.k||"").split(":"); if(parts.length!==2) return;
+      var d=ensureDay(selDate);
+      var grp = parts[0]==="p"?d.p : parts[0]==="r"?d.r : d.h;
+      grp[parts[1]] = t.checked;
+      touchDay(selDate); renderDaily(); renderDash();
+    });
+  });
+
+  /* 數值欄位 */
+  function numField(id, key, parse){
+    $(id).addEventListener("change", function(){
+      var d=ensureDay(selDate), v=$(id).value;
+      d[key] = (v==="" ? null : parse(v));
+      touchDay(selDate); renderDaily(); renderDash();
+    });
+  }
+  numField("#f_weight","weight",parseFloat);
+  numField("#f_steps","steps",function(v){ return Math.round(parseFloat(v)); });
+  $("#f_sleep").addEventListener("change", function(){
+    var d=ensureDay(selDate); d.sleep=$("#f_sleep").value||null; touchDay(selDate); renderDaily(); renderDash();
+  });
+  $("#f_energy").addEventListener("input", function(){ $("#energyVal").textContent=$("#f_energy").value+" /10"; });
+  $("#f_energy").addEventListener("change", function(){
+    var d=ensureDay(selDate); d.energy=+$("#f_energy").value; touchDay(selDate); renderDaily(); renderDash();
+  });
+  $("#f_note").addEventListener("change", function(){
+    var d=ensureDay(selDate); d.note=$("#f_note").value||""; touchDay(selDate);
+  });
+
+  $("#saveDay").addEventListener("click", function(){
+    var d=ensureDay(selDate);
+    d.weight = $("#f_weight").value===""?null:parseFloat($("#f_weight").value);
+    d.steps  = $("#f_steps").value===""?null:Math.round(parseFloat($("#f_steps").value));
+    d.sleep  = $("#f_sleep").value||null;
+    d.energy = +$("#f_energy").value;
+    d.note   = $("#f_note").value||"";
+    touchDay(selDate); renderAll();
+    $("#saveHint").textContent="已儲存 "+new Date().toLocaleTimeString("zh-TW");
+    toast("已儲存 "+selDate);
+  });
+  $("#clearDay").addEventListener("click", function(){
+    if(!S.days[selDate]) return;
+    if(!confirm("確定清除 "+selDate+" 的所有紀錄？")) return;
+    delete S.days[selDate]; save(); renderAll(); toast("已清除 "+selDate);
+  });
+
+  /* 每週量測 */
+  $("#weeklyForms").addEventListener("change", function(e){
+    var t=e.target;
+    if(t.classList.contains("wk-in")){
+      var w=+t.dataset.w; if(!S.weeks[w]) S.weeks[w]={cond:[false,false,false,false]};
+      S.weeks[w][t.dataset.f] = t.value===""? null : parseFloat(t.value);
+      S.weeks[w].ts=Date.now(); save(); renderWeekly(); renderDash();
+    } else if(t.classList.contains("wk-c")){
+      var w2=+t.dataset.w; if(!S.weeks[w2]) S.weeks[w2]={cond:[false,false,false,false]};
+      if(!S.weeks[w2].cond) S.weeks[w2].cond=[false,false,false,false];
+      S.weeks[w2].cond[+t.dataset.i]=t.checked;
+      S.weeks[w2].ts=Date.now(); save();
+    }
+  });
+
+  /* 基線 */
+  $("#saveProfile").addEventListener("click", function(){
+    var g=function(id){ var v=$(id).value; return v===""?null:parseFloat(v); };
+    S.profile = {
+      height:g("#p_height"), weight:g("#p_weight"), bf:g("#p_bf"),
+      birth:$("#p_birth").value||"", waist:g("#p_waist"), baseSteps:g("#p_basesteps"),
+      social:g("#p_social")==null?2.5:g("#p_social"), pal:parseFloat($("#p_pal").value)||1.35,
+      start:$("#p_start").value||"2026-08-18", ts:Date.now()
+    };
+    save(); renderAll();
+    $("#profileHint").textContent="已儲存並重算";
+    toast("基線已更新，全站數字已重算");
+  });
+
+  /* 同步 */
+  $("#applySync").addEventListener("click", function(){
+    var raw=$("#s_code").value.trim();
+    if(!raw){ toast("請先貼上同步碼"); return; }
+    var o;
+    try{ o=JSON.parse(b64d(raw)); }catch(e){ toast("同步碼格式錯誤"); return; }
+    if(!o || !o.u || !o.k || !o.s || o.s.length<16){ toast("同步碼內容不完整"); return; }
+    SYNC={u:o.u, k:o.k, s:o.s, last:0};
+    localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+    renderSyncUI();
+    pull().then(function(){ return push(true); }).then(function(){ toast("同步已啟用"); });
+  });
+  $("#pullNow").addEventListener("click", function(){ if(!SYNC){ toast("尚未啟用同步"); return; } pull(); });
+  $("#pushNow").addEventListener("click", function(){ if(!SYNC){ toast("尚未啟用同步"); return; } push(); });
+  $("#copySync").addEventListener("click", function(){
+    if(!SYNC){ toast("尚未啟用同步"); return; }
+    var code=b64e(JSON.stringify({u:SYNC.u,k:SYNC.k,s:SYNC.s}));
+    $("#s_code").value=code;
+    if(navigator.clipboard) navigator.clipboard.writeText(code).then(function(){ toast("同步碼已複製"); },
+      function(){ toast("已填入欄位，請手動複製"); });
+    else toast("已填入欄位，請手動複製");
+  });
+  $("#dropSync").addEventListener("click", function(){
+    if(!SYNC) return;
+    if(!confirm("停用同步？本機紀錄會保留，雲端資料不會刪除。")) return;
+    SYNC=null; localStorage.removeItem(LS_SYNC); renderSyncUI(); toast("已停用同步");
+  });
+
+  /* 匯出入 */
+  $("#expCsvDay").addEventListener("click", exportDaysCsv);
+  $("#expCsvWeek").addEventListener("click", exportWeeksCsv);
+  $("#expJson").addEventListener("click", function(){
+    dl("精力計畫_備份_"+todayStr()+".json", JSON.stringify(S,null,2), "application/json");
+    toast("已匯出 JSON 備份");
+  });
+  $("#impJson").addEventListener("click", function(){ $("#impFile").click(); });
+  $("#impFile").addEventListener("change", function(){
+    var f=$("#impFile").files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var o=JSON.parse(r.result);
+        if(!o || typeof o!=="object") throw new Error("格式錯誤");
+        if(!confirm("匯入將與現有紀錄合併（同一天以較新的為準）。繼續？")) return;
+        mergeDoc(o); save(); renderAll(); toast("已匯入並合併");
+      }catch(e){ toast("匯入失敗："+e.message); }
+      $("#impFile").value="";
+    };
+    r.readAsText(f);
+  });
+  $("#wipeLocal").addEventListener("click", function(){
+    if(!confirm("清空本機所有紀錄？雲端資料不受影響，之後可用「立即從雲端拉取」還原。")) return;
+    if(!confirm("再確認一次：這會刪掉這台裝置上的全部打卡與量測資料。")) return;
+    S={v:1, profile:blankProfile(), days:{}, weeks:{}, ts:Date.now()};
+    localStorage.removeItem(LS_KEY);
+    renderAll(); toast("已清空本機紀錄");
+  });
+
+  window.addEventListener("hashchange", function(){
+    var v=location.hash.slice(1); if(v && $("#v-"+v)) show(v);
+  });
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState==="visible" && SYNC) pull(true);
+  });
+}
+
+/* ==================================================================
+   9. 啟動
+   ================================================================== */
+function init(){
+  try{
+    var th=localStorage.getItem("ep4w_theme");
+    if(th) document.documentElement.setAttribute("data-theme", th);
+  }catch(e){}
+
+  load();
+  if(!S.profile.start) S.profile.start = "2026-08-18";
+  if(S.profile.social==null) S.profile.social = 2.5;
+  if(!S.profile.pal) S.profile.pal = 1.35;
+
+  var t=todayStr();
+  selDate = (t >= startDate() && t <= endDate()) ? t : (t < startDate() ? startDate() : endDate());
+
+  bind();
+  renderAll();
+
+  var v=location.hash.slice(1);
+  show(v && $("#v-"+v) ? v : "dash");
+
+  if(SYNC){ renderSyncUI(); pull(true); }
+  else if(!D()){ show("set"); }
+}
+
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+
+})();
+</script>
+</body>
+</html>
