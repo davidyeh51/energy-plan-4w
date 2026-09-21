@@ -1661,11 +1661,16 @@ function renderSyncUI(){
   st.innerHTML='已連結同步空間 <b class="num">'+esc(SYNC.s.slice(0,8))+'…</b>　·　'+esc(SYNC.u.replace(/^https?:\/\//,""))+
     (SYNC.last? '　·　最後同步 '+new Date(SYNC.last).toLocaleString("zh-TW"):'');
 }
+function cleanSupabaseUrl(u){
+  if(!u) return "";
+  return String(u).trim().replace(/\/+$/, "").replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
+}
 function rpc(fn, body){
   if(!SYNC) return Promise.reject(new Error("未設定同步"));
-  return fetch(SYNC.u.replace(/\/+$/,"")+"/rest/v1/rpc/"+fn, {
+  var base = cleanSupabaseUrl(SYNC.u);
+  return fetch(base+"/rest/v1/rpc/"+fn, {
     method:"POST",
-    headers:{ "Content-Type":"application/json", "apikey":SYNC.k, "Authorization":"Bearer "+SYNC.k },
+    headers:{ "Content-Type":"application/json", "apikey":SYNC.k.trim(), "Authorization":"Bearer "+SYNC.k.trim() },
     body: JSON.stringify(body)
   }).then(function(r){
     if(!r.ok) return r.text().then(function(t){ throw new Error("HTTP "+r.status+" "+t.slice(0,140)); });
@@ -1903,7 +1908,7 @@ function bind(){
     var o;
     try{ o=JSON.parse(b64d(raw)); }catch(e){ toast("同步碼格式錯誤"); return; }
     if(!o || !o.u || !o.k || !o.s || o.s.length<16){ toast("同步碼內容不完整"); return; }
-    SYNC={u:o.u, k:o.k, s:o.s, last:0};
+    SYNC={u:cleanSupabaseUrl(o.u), k:String(o.k).trim(), s:String(o.s).trim(), last:0};
     localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
     renderSyncUI();
     pull().then(function(){ return push(true); }).then(function(){ toast("同步已啟用"); });
@@ -1912,7 +1917,7 @@ function bind(){
   $("#pushNow").addEventListener("click", function(){ if(!SYNC){ toast("尚未啟用同步"); return; } push(); });
   $("#copySync").addEventListener("click", function(){
     if(!SYNC){ toast("尚未啟用同步"); return; }
-    var code=b64e(JSON.stringify({u:SYNC.u,k:SYNC.k,s:SYNC.s}));
+    var code=b64e(JSON.stringify({u:cleanSupabaseUrl(SYNC.u),k:SYNC.k,s:SYNC.s}));
     $("#s_code").value=code;
     if(navigator.clipboard) navigator.clipboard.writeText(code).then(function(){ toast("同步碼已複製"); },
       function(){ toast("已填入欄位，請手動複製"); });
@@ -1924,7 +1929,7 @@ function bind(){
     SYNC=null; localStorage.removeItem(LS_SYNC); renderSyncUI(); toast("已停用同步");
   });
   $("#btnGenSync").addEventListener("click", function(){
-    var u = ($("#sb_url").value || "").trim().replace(/\/+$/, "");
+    var u = cleanSupabaseUrl($("#sb_url").value);
     var k = ($("#sb_key").value || "").trim();
     if(!u || !/^https?:\/\//i.test(u)){ toast("請輸入正確的 Supabase Project URL"); return; }
     if(!k || k.length < 20){ toast("請輸入有效的 anon key"); return; }
