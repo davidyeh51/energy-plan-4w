@@ -1695,8 +1695,10 @@ function pull(silent){
     if(!silent) toast(changed? "已從雲端更新":"雲端已是最新");
   }).catch(function(e){
     syncBadge("err","同步失敗");
+    var st=$("#syncStatus"); if(st) st.innerHTML='<span style="color:var(--coral);font-weight:600">❌ 同步失敗原因：'+esc(e.message)+'</span>';
     if(!silent) toast("拉取失敗："+e.message);
     else console.warn("pull failed", e);
+    throw e;
   });
 }
 var pushTimer=null;
@@ -1715,6 +1717,7 @@ function push(silent){
       if(!silent) toast("已上傳到雲端");
     }).catch(function(e){
       syncBadge("err","同步失敗");
+      var st=$("#syncStatus"); if(st) st.innerHTML='<span style="color:var(--coral);font-weight:600">❌ 同步失敗原因：'+esc(e.message)+'</span>';
       if(!silent) toast("上傳失敗："+e.message); else console.warn("push failed", e);
     });
 }
