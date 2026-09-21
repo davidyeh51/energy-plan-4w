@@ -617,6 +617,18 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
           <button class="btn gho" id="dropSync">停用同步</button>
         </div>
         <p class="small faint" id="syncStatus" style="margin-top:10px">—</p>
+
+        <details style="margin-top:14px;border:1px dashed var(--line);border-radius:var(--r-sm);padding:10px 12px">
+          <summary style="font-size:12.5px;font-weight:600;cursor:pointer;color:var(--teal)">📌 初次設定？點此輸入 Supabase 網址與金鑰直接產生同步碼</summary>
+          <div style="margin-top:10px;display:grid;gap:10px">
+            <p class="small muted">請先在 Supabase 的 SQL Editor 執行專案內的 <code>supabase-setup.sql</code>，然後將 Project Settings &gt; API 中的資訊填入下方：</p>
+            <label class="field"><span>Supabase Project URL</span><input class="inp" type="url" id="sb_url" placeholder="https://xxxxxxxx.supabase.co" style="font-size:12.5px"></label>
+            <label class="field"><span>Supabase anon / public key</span><input class="inp" type="password" id="sb_key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." style="font-size:12.5px"></label>
+            <div class="btn-row">
+              <button class="btn pri" id="btnGenSync" type="button" style="font-size:12.5px">一鍵產生同步碼並啟用</button>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
 
@@ -1907,6 +1919,22 @@ function bind(){
     if(!SYNC) return;
     if(!confirm("停用同步？本機紀錄會保留，雲端資料不會刪除。")) return;
     SYNC=null; localStorage.removeItem(LS_SYNC); renderSyncUI(); toast("已停用同步");
+  });
+  $("#btnGenSync").addEventListener("click", function(){
+    var u = ($("#sb_url").value || "").trim().replace(/\/+$/, "");
+    var k = ($("#sb_key").value || "").trim();
+    if(!u || !/^https?:\/\//i.test(u)){ toast("請輸入正確的 Supabase Project URL"); return; }
+    if(!k || k.length < 20){ toast("請輸入有效的 anon key"); return; }
+    var bytes = new Uint8Array(16);
+    if(window.crypto && window.crypto.getRandomValues){
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for(var i=0; i<16; i++) bytes[i] = Math.floor(Math.random()*256);
+    }
+    var s = Array.from(bytes).map(function(b){ return (b<16?"0":"")+b.toString(16); }).join("");
+    var code = b64e(JSON.stringify({u: u, k: k, s: s}));
+    $("#s_code").value = code;
+    $("#applySync").click();
   });
 
   /* 匯出入 */
