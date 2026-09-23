@@ -416,13 +416,33 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     </div>
 
     <div class="sec">
-      <div class="sec-head"><h2>30 秒記錄</h2></div>
+      <div class="sec-head">
+        <h2>晨起體態量測</h2>
+        <span class="note-r" id="dailyLbmHint">排尿後、空腹、同一機器量測</span>
+      </div>
       <div class="card pad">
-        <div class="grid g4">
+        <div class="grid g3">
           <label class="field" style="margin:0">
             <span>晨起體重 <em>kg</em></span>
             <input class="inp" type="number" step="0.1" min="30" max="200" id="f_weight" placeholder="—" inputmode="decimal">
           </label>
+          <label class="field" style="margin:0">
+            <span>體脂率 <em>%</em></span>
+            <input class="inp" type="number" step="0.1" min="3" max="60" id="f_bf" placeholder="—" inputmode="decimal">
+          </label>
+          <label class="field" style="margin:0">
+            <span>BMI 指數 <em>可自動或手動輸入</em></span>
+            <input class="inp" type="number" step="0.1" min="10" max="60" id="f_bmi" placeholder="—" inputmode="decimal">
+          </label>
+        </div>
+        <div id="dailyBodyCompBadge" style="margin-top:12px;font-size:12.5px" class="muted"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2>日常指標</h2></div>
+      <div class="card pad">
+        <div class="grid g3">
           <label class="field" style="margin:0">
             <span>今日步數</span>
             <input class="inp" type="number" step="100" min="0" max="60000" id="f_steps" placeholder="—" inputmode="numeric">
@@ -435,6 +455,41 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
             <span>今日精力 <em id="energyVal">— /10</em></span>
             <input class="slider" type="range" min="1" max="10" step="1" id="f_energy" value="6" style="margin-top:12px">
           </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>餐食熱量（MyFitnessPal）</h2>
+        <span class="note-r" id="mfpSummaryNote">總攝取 — kcal</span>
+      </div>
+      <div class="card pad">
+        <div class="grid g4">
+          <label class="field" style="margin:0">
+            <span>早餐熱量 <em>kcal</em></span>
+            <input class="inp mfp-in" type="number" step="1" min="0" max="4000" id="f_kcal_b" placeholder="—" inputmode="numeric">
+          </label>
+          <label class="field" style="margin:0">
+            <span>午餐熱量 <em>kcal</em></span>
+            <input class="inp mfp-in" type="number" step="1" min="0" max="4000" id="f_kcal_l" placeholder="—" inputmode="numeric">
+          </label>
+          <label class="field" style="margin:0">
+            <span>晚餐熱量 <em>kcal</em></span>
+            <input class="inp mfp-in" type="number" step="1" min="0" max="4000" id="f_kcal_d" placeholder="—" inputmode="numeric">
+          </label>
+          <label class="field" style="margin:0">
+            <span>點心／補充 <em>kcal</em></span>
+            <input class="inp mfp-in" type="number" step="1" min="0" max="4000" id="f_kcal_s" placeholder="—" inputmode="numeric">
+          </label>
+        </div>
+        <hr class="hr" style="margin:14px 0 10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px" class="small">
+          <div>
+            今日攝取總熱量：<b class="num" id="mfpTotalNum" style="font-size:18px;color:var(--ink)">—</b> kcal
+            <span id="mfpDiffBadge" style="margin-left:8px"></span>
+          </div>
+          <div class="muted" id="mfpTargetText">目標預算：— kcal</div>
         </div>
       </div>
     </div>
@@ -905,7 +960,8 @@ function dayCalc(date){
 function weekCalc(w){
   var dv = D(), dates = weekDates(w);
   var res = { logged:0, total:0, target:0, adhDone:0, adhAll:0, trains:0,
-              wSum:0, wN:0, stepSum:0, stepN:0, enSum:0, enN:0, sleepSum:0, sleepN:0, socialN:0 };
+              wSum:0, wN:0, bfSum:0, bfN:0, kcalSum:0, kcalN:0,
+              stepSum:0, stepN:0, enSum:0, enN:0, sleepSum:0, sleepN:0, socialN:0 };
   if(!dv) return res;
   for(var i=0;i<dates.length;i++){
     var dt = dates[i], d = S.days[dt];
@@ -915,6 +971,11 @@ function weekCalc(w){
       res.total += c.total;
       if(d.type==="social") res.socialN++;
       if(d.weight!=null){ res.wSum+=d.weight; res.wN++; }
+      if(d.bf!=null){ res.bfSum+=d.bf; res.bfN++; }
+      if(d.kcalB!=null || d.kcalL!=null || d.kcalD!=null || d.kcalS!=null){
+        res.kcalSum += ((d.kcalB||0)+(d.kcalL||0)+(d.kcalD||0)+(d.kcalS||0));
+        res.kcalN++;
+      }
       if(d.steps!=null){ res.stepSum+=d.steps; res.stepN++; }
       if(d.energy!=null){ res.enSum+=d.energy; res.enN++; }
       if(d.sleep){ res.sleepSum+=sleepMin(d.sleep); res.sleepN++; }
@@ -975,15 +1036,22 @@ function latestMA(){
   return null;
 }
 function latestWeek(){
-  for(var w=4;w>=1;w--){ var m=S.weeks[w]; if(m && m.bf!=null) return {w:w, m:m}; }
+  for(var w=4;w>=1;w--){
+    var m=S.weeks[w];
+    if(m && m.bf!=null) return {w:w, m:m};
+    var r=weekCalc(w);
+    if(r.bfN>0) return {w:w, m:{bf: r1(r.bfSum/r.bfN), weight: r.wN? r1(r.wSum/r.wN):null}};
+  }
   return null;
 }
 function lbmAt(w){
-  var m = S.weeks[w]; if(!m || m.bf==null) return null;
-  var wt = m.weight!=null ? m.weight : null;
-  if(wt==null){ var r=weekCalc(w); wt = r.wN? r.wSum/r.wN : null; }
+  var m = S.weeks[w]||{};
+  var r = weekCalc(w);
+  var bf = m.bf!=null ? m.bf : (r.bfN ? r.bfSum/r.bfN : null);
+  if(bf==null) return null;
+  var wt = m.weight!=null ? m.weight : (r.wN ? r.wSum/r.wN : null);
   if(wt==null) return null;
-  return wt*(1-m.bf/100);
+  return wt*(1-bf/100);
 }
 /* ==================================================================
    4. 圖表（純手繪 SVG，無外部依賴）
@@ -1126,17 +1194,20 @@ function renderDash(){
   var rows = dates.map(function(dt){
     var d=S.days[dt], c=dayCalc(dt), a=adherence(dt);
     var isToday = dt===today;
+    var hasMfp = d && (d.kcalB!=null || d.kcalL!=null || d.kcalD!=null || d.kcalS!=null);
+    var mfpTot = hasMfp ? ((d.kcalB||0)+(d.kcalL||0)+(d.kcalD||0)+(d.kcalS||0)) : null;
     return '<tr'+(isToday?' class="hi"':'')+'><td>'+dt.slice(5).replace("-","/")+' <span class="faint">'+WD[wdOf(dt)]+'</span></td>'+
       '<td>'+(d? (d.type==="social"?'<span class="pill a">應酬</span>':'<span class="pill n">平日</span>'):'<span class="faint">—</span>')+'</td>'+
-      '<td class="n">'+(d&&d.weight!=null? nf(d.weight,1):"—")+'</td>'+
+      '<td class="n">'+(d&&d.weight!=null? (nf(d.weight,1)+(d.bf!=null?' <span class="tiny faint" style="font-size:11px">('+nf(d.bf,1)+'%)</span>':'')):"—")+'</td>'+
       '<td class="n">'+(d&&d.steps!=null? thou(d.steps):"—")+'</td>'+
       '<td class="n">'+(d&&d.sleep? d.sleep:"—")+'</td>'+
       '<td class="n">'+(d&&d.energy!=null? d.energy:"—")+'</td>'+
+      '<td class="n">'+(mfpTot!=null? thou(mfpTot):'<span class="faint">—</span>')+'</td>'+
       '<td class="n">'+(d? thou(c.total):"—")+'</td>'+
       '<td class="n">'+(a[1]? Math.round(a[0]/a[1]*100)+"%":"—")+'</td></tr>';
   }).join("");
-  $("#weekTable").innerHTML = '<thead><tr><th>日期</th><th>型態</th><th class="n">體重</th><th class="n">步數</th>'+
-    '<th class="n">入睡</th><th class="n">精力</th><th class="n">缺口</th><th class="n">依從</th></tr></thead><tbody>'+rows+'</tbody>';
+  $("#weekTable").innerHTML = '<thead><tr><th>日期</th><th>型態</th><th class="n">體重 (體脂)</th><th class="n">步數</th>'+
+    '<th class="n">入睡</th><th class="n">精力</th><th class="n">MFP熱量</th><th class="n">缺口</th><th class="n">依從</th></tr></thead><tbody>'+rows+'</tbody>';
   $("#adhNote").textContent = "第 "+cw+" 週 · "+dates[0].slice(5).replace("-","/")+"–"+dates[6].slice(5).replace("-","/");
 
   $("#redFlagBody").innerHTML = '<div class="checks">'+RED_FLAGS.map(function(f){
@@ -1233,7 +1304,66 @@ function renderCharts(){
   g.innerHTML = out.join("");
 }
 
-/* ---------- 今日打卡 ---------- */
+/* ---------- 今日打卡輔助與渲染 ---------- */
+function renderBodyCompBadge(d, dv){
+  var el = $("#dailyBodyCompBadge");
+  if(!el) return;
+  var parts = [];
+  var curBmi = d.bmi!=null? d.bmi : (d.weight!=null && S.profile && S.profile.height ? r1(d.weight / Math.pow(S.profile.height/100, 2)) : null);
+  if(d.weight!=null && d.bf!=null){
+    var lbm = d.weight * (1 - d.bf/100);
+    var fatM = d.weight - lbm;
+    parts.push('瘦體重 <b class="num">'+nf(lbm,1)+'</b> kg　脂肪重 <b class="num">'+nf(fatM,1)+'</b> kg');
+    if(dv && dv.lbmGuard!=null){
+      if(lbm >= dv.lbmGuard){
+        parts.push('<span class="pill g">✓ 瘦體重守住（護欄 ≥ '+nf(dv.lbmGuard,1)+' kg）</span>');
+      } else {
+        parts.push('<span class="pill c">⚠ 瘦體重跌破護欄（護欄 '+nf(dv.lbmGuard,1)+' kg）· 注意蛋白質與總攝取</span>');
+      }
+    }
+    if(curBmi!=null) parts.push('<span class="pill t">BMI '+curBmi+'</span>');
+  } else if(d.weight!=null){
+    if(curBmi!=null) parts.push('BMI <b class="num">'+curBmi+'</b>');
+    parts.push('<span class="faint">填寫體脂率可自動推導每日瘦體重與護欄狀態</span>');
+  } else {
+    parts.push('<span class="faint">輸入晨起體重與體脂率，自動推導瘦體重與護欄狀態；於「基線」填寫身高可自動換算 BMI。</span>');
+  }
+  el.innerHTML = parts.join("　");
+}
+
+function renderMfpSummary(d, type, dv){
+  var hasMfp = (d.kcalB!=null || d.kcalL!=null || d.kcalD!=null || d.kcalS!=null);
+  var target = dv ? (type==="social" ? dv.kcalS : dv.kcalN) : null;
+  var sumEl = $("#mfpTotalNum"), noteEl = $("#mfpSummaryNote"), badgeEl = $("#mfpDiffBadge"), tgtEl = $("#mfpTargetText");
+  if(!hasMfp){
+    if(sumEl) sumEl.textContent = "—";
+    if(noteEl) noteEl.textContent = "總攝取 — kcal";
+    if(badgeEl) badgeEl.innerHTML = "";
+    if(tgtEl) tgtEl.innerHTML = target
+      ? ('今日目標預算：<b class="num">'+thou(target)+'</b> kcal ('+(type==="social"?"應酬日":"平日")+')')
+      : '設定基線後顯示目標預算';
+  } else {
+    var tot = (d.kcalB||0) + (d.kcalL||0) + (d.kcalD||0) + (d.kcalS||0);
+    if(sumEl) sumEl.textContent = thou(tot);
+    if(noteEl) noteEl.innerHTML = '總攝取 <b class="num">'+thou(tot)+'</b> kcal';
+    if(tgtEl) tgtEl.innerHTML = target
+      ? ('今日目標預算：<b class="num">'+thou(target)+'</b> kcal ('+(type==="social"?"應酬日":"平日")+')')
+      : '設定基線後顯示目標預算';
+    if(badgeEl){
+      if(target!=null){
+        var diff = target - tot;
+        if(diff >= 0){
+          badgeEl.innerHTML = '<span class="pill g">預算內 · 尚餘 '+thou(diff)+' kcal</span>';
+        } else {
+          badgeEl.innerHTML = '<span class="pill c">超額 '+thou(Math.abs(diff))+' kcal</span>';
+        }
+      } else {
+        badgeEl.innerHTML = "";
+      }
+    }
+  }
+}
+
 function renderDaily(){
   var dv=D(), dt=selDate, d=S.days[dt]||{}, wk=weekOf(dt), cw=clamp(wk,1,4);
   var type = d.type || "normal";
@@ -1262,13 +1392,31 @@ function renderDaily(){
       : '目標 <b class="num">'+thou(dv.kcalN)+'</b> kcal，蛋白質 <b class="num">'+dv.protein+'</b> g，完全可控。')
     : '設定基線後顯示熱量目標。';
 
-  /* 基本欄位 */
+  /* 體態指標 */
   $("#f_weight").value = d.weight!=null? d.weight : "";
+  $("#f_bf").value     = d.bf!=null? d.bf : "";
+  if(d.bmi!=null){
+    $("#f_bmi").value = d.bmi;
+  } else if(d.weight!=null && S.profile && S.profile.height){
+    $("#f_bmi").value = r1(d.weight / Math.pow(S.profile.height/100, 2));
+  } else {
+    $("#f_bmi").value = "";
+  }
+  renderBodyCompBadge(d, dv);
+
+  /* 日常指標 */
   $("#f_steps").value  = d.steps!=null? d.steps : "";
   $("#f_sleep").value  = d.sleep || "";
   $("#f_energy").value = d.energy!=null? d.energy : 6;
   $("#energyVal").textContent = (d.energy!=null? d.energy : "—")+" /10";
   $("#f_note").value   = d.note || "";
+
+  /* 餐食熱量（MyFitnessPal） */
+  $("#f_kcal_b").value = d.kcalB!=null? d.kcalB : "";
+  $("#f_kcal_l").value = d.kcalL!=null? d.kcalL : "";
+  $("#f_kcal_d").value = d.kcalD!=null? d.kcalD : "";
+  $("#f_kcal_s").value = d.kcalS!=null? d.kcalS : "";
+  renderMfpSummary(d, type, dv);
 
   /* 蛋白質 */
   $("#proteinNote").innerHTML = dv? ('目標 <b class="num">'+dv.protein+'</b> g／日 · 2.3 g/kg 瘦體重 · 記份量，不用計算') : '設定基線後顯示目標';
@@ -1310,6 +1458,18 @@ function renderDaily(){
       ? '<span class="faint">未設定基線步數，無法計算走路增量</span>'
       : ('步數 '+(d.steps!=null? thou(d.steps):"—")+'　超出基線 '+
          (d.steps!=null? thou(Math.max(0,d.steps-dv.baseSteps)):"—")+' 步　→ <b class="num">'+thou(c.neat)+'</b> kcal');
+    var hasMfp = (d.kcalB!=null || d.kcalL!=null || d.kcalD!=null || d.kcalS!=null);
+    var mfpBoxHtml = "";
+    if(hasMfp && dv.tdee){
+      var mfpTot = (d.kcalB||0) + (d.kcalL||0) + (d.kcalD||0) + (d.kcalS||0);
+      var mfpDietDef = Math.round(dv.tdee - mfpTot);
+      var mfpTotDef = Math.round(mfpDietDef + (c.neat||0));
+      mfpBoxHtml = '<div class="note" style="margin-top:12px;background:var(--card-sub);border:1px solid var(--line);padding:10px 14px;border-radius:10px;font-size:13px">'+
+        '<b>MyFitnessPal 實測核算：</b>總攝取 <b class="num">'+thou(mfpTot)+'</b> kcal'+
+        ' ➔ 實測飲食缺口 <b class="num" style="color:'+(mfpDietDef>=0?'var(--green)':'var(--coral)')+'">'+(mfpDietDef>0?'+':'')+thou(mfpDietDef)+'</b> kcal'+
+        (c.neat>0? ' ＋ 走路增量 <b class="num">'+thou(c.neat)+'</b> kcal ➔ <b>實測總缺口 <b class="num" style="color:'+(mfpTotDef>=0?'var(--green)':'var(--coral)')+'">'+(mfpTotDef>0?'+':'')+thou(mfpTotDef)+'</b> kcal</b>' : '')+
+        '</div>';
+    }
     box.innerHTML =
       '<div class="eyebrow">今日估算</div>'+
       '<div class="grid g3" style="gap:12px">'+
@@ -1324,6 +1484,7 @@ function renderDaily(){
       '<div class="small muted">蛋白質估計 <b class="num">'+c.proteinG+'</b> / '+dv.protein+' g'+
       (c.proteinG < dv.protein*0.75 ? '　<span class="pill c">偏低 · 保肌風險</span>' : '　<span class="pill g">足量</span>')+
       '　'+neatTxt+'</div>'+
+      mfpBoxHtml+
       (wk===1? '<div class="note g" style="margin-top:12px"><b>W1 不看缺口。</b>本週只要把記錄補齊、早餐蛋白質吃到目標、練滿 2 次就算成功。</div>':'');
   }
 }
@@ -1742,15 +1903,22 @@ function csvCell(v){
   return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
 }
 function exportDaysCsv(){
-  var head=["日期","週次","星期","日型態","晨起體重kg","步數","入睡時間","精力",
+  var dv = D();
+  var head=["日期","週次","星期","日型態","晨起體重kg","體脂率%","BMI","步數","入睡時間","精力",
+            "早餐kcal","午餐kcal","晚餐kcal","點心kcal","MFP總攝取kcal","MFP實測缺口kcal",
             "蛋白早","蛋白午","蛋白晚","蛋白補","規則1","規則2","規則3",
             "訓練","入睡達標","咖啡因15前","睡前3hr無酒","估計缺口kcal","依從度","備註"];
   var rows=[head.map(csvCell).join(",")];
   Object.keys(S.days).sort().forEach(function(dt){
     var d=S.days[dt], c=dayCalc(dt), a=adherence(dt);
     var list=RULES[d.type||"normal"];
+    var hasMfp = (d.kcalB!=null || d.kcalL!=null || d.kcalD!=null || d.kcalS!=null);
+    var mfpTot = hasMfp ? ((d.kcalB||0)+(d.kcalL||0)+(d.kcalD||0)+(d.kcalS||0)) : "";
+    var mfpDef = (hasMfp && dv && dv.tdee) ? Math.round(dv.tdee - mfpTot + (c.neat||0)) : "";
+    var curBmi = d.bmi!=null? d.bmi : (d.weight!=null && S.profile && S.profile.height ? r1(d.weight / Math.pow(S.profile.height/100, 2)) : "");
     rows.push([dt, "W"+weekOf(dt), "週"+WD[wdOf(dt)], d.type==="social"?"應酬日":"平日",
-      d.weight, d.steps, d.sleep, d.energy,
+      d.weight, d.bf, curBmi, d.steps, d.sleep, d.energy,
+      d.kcalB, d.kcalL, d.kcalD, d.kcalS, mfpTot, mfpDef,
       yn(d.p&&d.p.b), yn(d.p&&d.p.l), yn(d.p&&d.p.d), yn(d.p&&d.p.x),
       yn(d.r&&d.r[list[0].id]), yn(d.r&&d.r[list[1].id]), yn(d.r&&d.r[list[2].id]),
       yn(d.h&&d.h.train), yn(d.h&&d.h.sleepOn), yn(d.h&&d.h.caffeine), yn(d.h&&d.h.noLateEtOH),
@@ -1837,13 +2005,59 @@ function bind(){
   /* 數值欄位 */
   function numField(id, key, parse){
     $(id).addEventListener("change", function(){
-      var d=ensureDay(selDate), v=$(id).value;
+      var d=ensureDay(selDate), v=$(id).value.trim();
       d[key] = (v==="" ? null : parse(v));
       touchDay(selDate); renderDaily(); renderDash();
     });
   }
-  numField("#f_weight","weight",parseFloat);
-  numField("#f_steps","steps",function(v){ return Math.round(parseFloat(v)); });
+
+  /* 體態指標即時監聽與存檔 */
+  ["#f_weight", "#f_bf", "#f_bmi"].forEach(function(sel){
+    $(sel).addEventListener("input", function(){
+      var w = $("#f_weight").value.trim(), b = $("#f_bf").value.trim(), m = $("#f_bmi").value.trim();
+      var tempD = {
+        weight: w==="" ? null : parseFloat(w),
+        bf: b==="" ? null : parseFloat(b),
+        bmi: m==="" ? null : parseFloat(m)
+      };
+      renderBodyCompBadge(tempD, D());
+    });
+  });
+
+  $("#f_weight").addEventListener("change", function(){
+    var d=ensureDay(selDate), v=$("#f_weight").value.trim();
+    d.weight = (v==="" ? null : parseFloat(v));
+    if(d.weight!=null && S.profile && S.profile.height && !$("#f_bmi").value){
+      var autoBmi = r1(d.weight / Math.pow(S.profile.height/100, 2));
+      $("#f_bmi").value = autoBmi;
+      d.bmi = autoBmi;
+    }
+    touchDay(selDate); renderDaily(); renderDash();
+  });
+  numField("#f_bf", "bf", parseFloat);
+  numField("#f_bmi", "bmi", parseFloat);
+  numField("#f_steps", "steps", function(v){ return Math.round(parseFloat(v)); });
+
+  /* MyFitnessPal 餐食熱量即時計算與存檔 */
+  var mfpInputs = [
+    {id:"#f_kcal_b", key:"kcalB"},
+    {id:"#f_kcal_l", key:"kcalL"},
+    {id:"#f_kcal_d", key:"kcalD"},
+    {id:"#f_kcal_s", key:"kcalS"}
+  ];
+  mfpInputs.forEach(function(item){
+    $(item.id).addEventListener("input", function(){
+      var d=ensureDay(selDate), v=$(item.id).value.trim();
+      d[item.key] = (v==="" ? null : Math.round(parseFloat(v)));
+      renderMfpSummary(d, d.type||"normal", D());
+    });
+    $(item.id).addEventListener("change", function(){
+      var d=ensureDay(selDate), v=$(item.id).value.trim();
+      d[item.key] = (v==="" ? null : Math.round(parseFloat(v)));
+      touchDay(selDate); renderDaily(); renderDash();
+    });
+  });
+
   $("#f_sleep").addEventListener("change", function(){
     var d=ensureDay(selDate); d.sleep=$("#f_sleep").value||null; touchDay(selDate); renderDaily(); renderDash();
   });
@@ -1857,8 +2071,20 @@ function bind(){
 
   $("#saveDay").addEventListener("click", function(){
     var d=ensureDay(selDate);
-    d.weight = $("#f_weight").value===""?null:parseFloat($("#f_weight").value);
-    d.steps  = $("#f_steps").value===""?null:Math.round(parseFloat($("#f_steps").value));
+    var parseNum = function(id, isFloat){
+      var v = $(id).value.trim();
+      if(!v) return null;
+      var n = isFloat ? parseFloat(v) : Math.round(parseFloat(v));
+      return isNaN(n) ? null : n;
+    };
+    d.weight = parseNum("#f_weight", true);
+    d.bf     = parseNum("#f_bf", true);
+    d.bmi    = parseNum("#f_bmi", true);
+    d.steps  = parseNum("#f_steps", false);
+    d.kcalB  = parseNum("#f_kcal_b", false);
+    d.kcalL  = parseNum("#f_kcal_l", false);
+    d.kcalD  = parseNum("#f_kcal_d", false);
+    d.kcalS  = parseNum("#f_kcal_s", false);
     d.sleep  = $("#f_sleep").value||null;
     d.energy = +$("#f_energy").value;
     d.note   = $("#f_note").value||"";
