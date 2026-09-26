@@ -224,6 +224,24 @@ tbody tr.hi{background:var(--green-soft)}
 .wstrip .w span{font-size:11px;color:var(--muted);display:block;line-height:1.4}
 @media(max-width:560px){.wstrip{grid-template-columns:repeat(2,1fr)}}
 
+/* ---------- quarterly milestones ---------- */
+.m-master{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:16px}
+.m-track{position:relative;height:12px;border-radius:99px;background:var(--line-soft);overflow:hidden;margin:8px 0 6px}
+.m-track > i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1)}
+.m-tick{position:absolute;top:0;bottom:0;width:2px;background:var(--card);opacity:.85;z-index:2}
+.m-nodes{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:var(--mono);margin-top:4px;flex-wrap:wrap;gap:6px}
+.m-stage{border:1px solid var(--line);border-radius:var(--r-sm);padding:15px 16px;background:var(--card);position:relative;transition:.16s;display:flex;flex-direction:column;justify-content:space-between}
+.m-stage.active{border-color:var(--green);box-shadow:0 0 0 2px var(--green-soft)}
+.m-stage.done{border-color:var(--teal);background:var(--green-soft)}
+.m-stage .m-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.m-stage .m-q{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink)}
+.m-stage .m-main{display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.m-stage .m-big{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.m-stage .m-big small{font-size:13px;font-weight:600;color:var(--muted);margin-left:2px}
+.m-stage .m-pbar{margin-top:8px}
+.m-stage .m-pbar-lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:4px;font-family:var(--mono)}
+.m-stage .m-foot{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted);line-height:1.45}
+
 .daystrip{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .daystrip::-webkit-scrollbar{display:none}
 .dcell{flex:0 0 auto;width:46px;text-align:center;border:1px solid var(--line);border-radius:var(--r-sm);
@@ -359,6 +377,14 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
         <span class="note-r">依優先序：瘦體重 &gt; 腰圍 &gt; 體重</span>
       </div>
       <div class="grid g4" id="metricRow"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2>長期體態里程碑（2026Q4 → 2027Q1 → 2027Q2）</h2>
+        <span class="note-r" id="milestoneStatusNote">9 個月身體重組：純脂肪 −9.1 kg · 瘦體重 +2.1 kg</span>
+      </div>
+      <div class="card pad" id="milestoneCard"></div>
     </div>
 
     <div class="sec">
@@ -1160,6 +1186,9 @@ function renderDash(){
     "減重期精力<b>不該</b>下降。持續掉 = 缺口過大"));
   $("#metricRow").innerHTML = mrow.join("");
 
+  /* --- 長期里程碑 (2026Q4 → 2027Q1 → 2027Q2) --- */
+  renderMilestones(dv);
+
   /* --- 缺口卡 --- */
   var dc = $("#deficitCard");
   if(!dv){ dc.innerHTML = '<div class="empty">設定身體基線後，這裡會即時算出你本週累積的能量缺口。</div>'; }
@@ -1225,6 +1254,209 @@ function deltaTxt(v,unit,d){
   var c = v<-0.05?"down":(v>0.05?"up":"flat");
   var s = v>0?"+":"";
   return '<span class="delta '+c+'">'+s+nf(v,d)+' '+unit+'</span>';
+}
+
+/* ---------- 三季度長期里程碑 (2026Q4 → 2027Q1 → 2027Q2) ---------- */
+var MILESTONES = [
+  {
+    id: "2026Q4", label: "2026 Q4", deadline: "2026-12-31",
+    w: 84.0, bf: 26.0, fat: 21.8, lbm: 62.2, bmi: 25.9,
+    tip: "啟動新手負重增肌紅利（瘦體重 +1.0 kg）＋ 建立 MFP 飲食直覺與秋冬火鍋防禦"
+  },
+  {
+    id: "2027Q1", label: "2027 Q1", deadline: "2027-03-31",
+    w: 82.0, bf: 23.0, fat: 18.9, lbm: 63.1, bmi: 25.3,
+    tip: "尾牙與農曆春節防禦戰：頭尾進攻、過年維持不復胖 ＋ 陪女兒日行萬步抵銷年菜"
+  },
+  {
+    id: "2027Q2", label: "2027 Q2", deadline: "2027-06-30",
+    w: 79.0, bf: 20.0, fat: 15.8, lbm: 63.2, bmi: 24.4,
+    tip: "4 月初依新體重下修 TDEE 預算 ＋ 重訓日/非重訓日碳水循環，收乾最後 3 kg 純脂肪"
+  }
+];
+
+function getCurrentBody(dv, overrideD){
+  var w0 = (S.profile && S.profile.weight) ? +S.profile.weight : 86.0;
+  var bf0 = (S.profile && S.profile.bf) ? +S.profile.bf : 28.9;
+  var h = (S.profile && S.profile.height) ? +S.profile.height : 180;
+  var fat0 = w0 * (bf0 / 100);
+  var lbm0 = w0 - fat0;
+
+  var curW = (overrideD && overrideD.weight!=null) ? +overrideD.weight : null;
+  var wSource = (overrideD && overrideD.weight!=null) ? "當日輸入" : null;
+  if(curW == null){
+    var ma = latestMA();
+    if(ma){ curW = ma.v; wSource = "7日均 ("+ma.d.slice(5).replace("-","/")+")"; }
+  }
+  var sortedDates = Object.keys(S.days||{}).sort().reverse();
+  if(curW == null){
+    for(var i=0;i<sortedDates.length;i++){
+      var d = S.days[sortedDates[i]];
+      if(d && d.weight!=null){ curW = +d.weight; wSource = sortedDates[i].slice(5).replace("-","/"); break; }
+    }
+  }
+  if(curW == null){
+    for(var w=4;w>=1;w--){
+      if(S.weeks[w] && S.weeks[w].weight!=null){ curW = +S.weeks[w].weight; wSource = "W"+w+"週量"; break; }
+    }
+  }
+  if(curW == null){ curW = w0; wSource = "基線"; }
+
+  var curBf = (overrideD && overrideD.bf!=null) ? +overrideD.bf : null;
+  var bfSource = (overrideD && overrideD.bf!=null) ? "當日輸入" : null;
+  if(curBf == null){
+    for(var j=0;j<sortedDates.length;j++){
+      var d2 = S.days[sortedDates[j]];
+      if(d2 && d2.bf!=null){ curBf = +d2.bf; bfSource = sortedDates[j].slice(5).replace("-","/"); break; }
+    }
+  }
+  if(curBf == null){
+    var lw = latestWeek();
+    if(lw && lw.m && lw.m.bf!=null){ curBf = +lw.m.bf; bfSource = "W"+lw.w+"週量"; }
+  }
+  if(curBf == null){ curBf = bf0; bfSource = "基線"; }
+
+  var curFat = curW * (curBf / 100);
+  var curLbm = curW - curFat;
+  var curBmi = curW / Math.pow(h/100, 2);
+  return {
+    w0:w0, bf0:bf0, fat0:fat0, lbm0:lbm0, h:h,
+    w:curW, bf:curBf, fat:curFat, lbm:curLbm, bmi:curBmi,
+    wSource:wSource, bfSource:bfSource
+  };
+}
+
+function renderMilestones(dv){
+  var host = $("#milestoneCard");
+  if(!host) return;
+  var b = getCurrentBody(dv);
+  var today = todayStr();
+
+  var wTotalSpan = Math.max(0.1, b.w0 - 79.0);
+  var wDone = b.w0 - b.w;
+  var wPctAll = clamp(wDone / wTotalSpan * 100, 0, 100);
+
+  var bfTotalSpan = Math.max(0.1, b.bf0 - 20.0);
+  var bfDone = b.bf0 - b.bf;
+  var bfPctAll = clamp(bfDone / bfTotalSpan * 100, 0, 100);
+
+  var fatTotalSpan = Math.max(0.1, b.fat0 - 15.8);
+  var fatDone = b.fat0 - b.fat;
+  var fatPctAll = clamp(fatDone / fatTotalSpan * 100, 0, 100);
+  var lbmDelta = b.lbm - b.lbm0;
+
+  var activeIdx = 0;
+  for(var i=0;i<MILESTONES.length;i++){
+    if(b.w > MILESTONES[i].w || b.bf > MILESTONES[i].bf){ activeIdx = i; break; }
+    if(i===MILESTONES.length-1) activeIdx = i;
+  }
+
+  var q4WTick = clamp((b.w0 - 84.0)/wTotalSpan*100, 5, 95).toFixed(1);
+  var q1WTick = clamp((b.w0 - 82.0)/wTotalSpan*100, 5, 95).toFixed(1);
+  var q4BfTick = clamp((b.bf0 - 26.0)/bfTotalSpan*100, 5, 95).toFixed(1);
+  var q1BfTick = clamp((b.bf0 - 23.0)/bfTotalSpan*100, 5, 95).toFixed(1);
+
+  var masterHtml =
+    '<div class="m-master">'+
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:10px">'+
+        '<div><span class="eyebrow" style="margin:0">9 個月雙軌總進度（起點 '+nf(b.w0,1)+'kg/'+nf(b.bf0,1)+'% ➔ 2027Q2 終極目標 79.0kg/20.0%）</span></div>'+
+        '<div class="tiny muted">目前數據來源：體重 <b class="num">'+nf(b.w,1)+' kg</b> ('+esc(b.wSource)+') · 體脂 <b class="num">'+nf(b.bf,1)+'%</b> ('+esc(b.bfSource)+')</div>'+
+      '</div>'+
+      /* 體重總進度條 */
+      '<div style="margin-bottom:12px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">'+
+          '<span><b>體重總進度</b>　<span class="muted">已減 <b class="num">'+(wDone>=0?nf(wDone,1):"+"+nf(Math.abs(wDone),1))+'</b> / '+nf(wTotalSpan,1)+' kg</span></span>'+
+          '<span class="num" style="font-weight:700;color:var(--green-deep)">'+Math.round(wPctAll)+'% <span class="muted" style="font-weight:400">（尚差 '+nf(Math.max(0,b.w-79.0),1)+' kg）</span></span>'+
+        '</div>'+
+        '<div class="m-track">'+
+          '<span class="m-tick" style="left:'+q4WTick+'%" title="2026Q4: 84kg"></span>'+
+          '<span class="m-tick" style="left:'+q1WTick+'%" title="2027Q1: 82kg"></span>'+
+          '<i style="width:'+wPctAll.toFixed(1)+'%"></i>'+
+        '</div>'+
+        '<div class="m-nodes">'+
+          '<span>起點 '+nf(b.w0,1)+'kg</span>'+
+          '<span>2026Q4 · 84.0kg</span>'+
+          '<span>2027Q1 · 82.0kg</span>'+
+          '<span>2027Q2 · 79.0kg</span>'+
+        '</div>'+
+      '</div>'+
+      /* 體脂總進度條 */
+      '<div style="margin-bottom:12px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">'+
+          '<span><b>體脂率總進度</b>　<span class="muted">已降 <b class="num">'+(bfDone>=0?nf(bfDone,1):"+"+nf(Math.abs(bfDone),1))+'</b> / '+nf(bfTotalSpan,1)+'%</span></span>'+
+          '<span class="num" style="font-weight:700;color:var(--teal)">'+Math.round(bfPctAll)+'% <span class="muted" style="font-weight:400">（尚差 '+nf(Math.max(0,b.bf-20.0),1)+'%）</span></span>'+
+        '</div>'+
+        '<div class="m-track">'+
+          '<span class="m-tick" style="left:'+q4BfTick+'%" title="2026Q4: 26%"></span>'+
+          '<span class="m-tick" style="left:'+q1BfTick+'%" title="2027Q1: 23%"></span>'+
+          '<i style="width:'+bfPctAll.toFixed(1)+'%;background:linear-gradient(90deg,var(--amber),var(--teal))"></i>'+
+        '</div>'+
+        '<div class="m-nodes">'+
+          '<span>起點 '+nf(b.bf0,1)+'%</span>'+
+          '<span>2026Q4 · 26.0%</span>'+
+          '<span>2027Q1 · 23.0%</span>'+
+          '<span>2027Q2 · 20.0%</span>'+
+        '</div>'+
+      '</div>'+
+      /* 純脂肪與瘦體重拆解列 */
+      '<div style="display:flex;gap:14px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--line-soft);font-size:12.5px" class="muted">'+
+        '<div>🔥 <b>純脂肪重</b>：起始 <span class="num">'+nf(b.fat0,1)+'</span> ➔ 目前 <b class="num" style="color:var(--ink)">'+nf(b.fat,1)+' kg</b> ➔ 終極目標 <span class="num">15.8 kg</span>（已減純油 <b class="num" style="color:var(--green-deep)">'+nf(fatDone,1)+'</b> / 9.1 kg · '+Math.round(fatPctAll)+'%）</div>'+
+        '<div style="margin-left:auto">💪 <b>瘦體重 (LBM)</b>：起始 <span class="num">'+nf(b.lbm0,1)+'</span> ➔ 目前 <b class="num" style="color:var(--ink)">'+nf(b.lbm,1)+' kg</b> ➔ 目標 <span class="num">63.2 kg</span>（累積變化 <b class="num" style="color:'+(lbmDelta>=0?'var(--green-deep)':'var(--coral)')+'">'+(lbmDelta>=0?'+':'')+nf(lbmDelta,1)+' kg</b>）</div>'+
+      '</div>'+
+    '</div>';
+
+  var stageCards = MILESTONES.map(function(m, idx){
+    var prevW = idx===0 ? b.w0 : MILESTONES[idx-1].w;
+    var prevBf = idx===0 ? b.bf0 : MILESTONES[idx-1].bf;
+    var isDone = (b.w <= m.w && b.bf <= m.bf);
+    var isAct = (!isDone && idx === activeIdx);
+    var daysLeft = diffDays(today, m.deadline);
+    var statusBadge = isDone
+      ? '<span class="pill g">✓ 已達標</span>'
+      : isAct
+        ? '<span class="pill t">🎯 當前目標'+(daysLeft>=0?' · 剩 '+daysLeft+' 天':'')+'</span>'
+        : '<span class="pill n">階段 '+(idx+1)+(daysLeft>=0?' · 剩 '+daysLeft+' 天':'')+'</span>';
+
+    var wCumPct = b.w <= m.w ? 100 : clamp((b.w0 - b.w) / Math.max(0.1, b.w0 - m.w) * 100, 0, 100);
+    var bfCumPct = b.bf <= m.bf ? 100 : clamp((b.bf0 - b.bf) / Math.max(0.1, b.bf0 - m.bf) * 100, 0, 100);
+    var wRem = Math.max(0, b.w - m.w);
+    var bfRem = Math.max(0, b.bf - m.bf);
+
+    return '<div class="m-stage'+(isAct?' active':'')+(isDone?' done':'')+'">'+
+      '<div>'+
+        '<div class="m-head">'+
+          '<span class="m-q">'+esc(m.label)+' <span class="faint" style="font-size:11.5px;font-weight:400">('+m.deadline.replace(/-/g,"/")+')</span></span>'+
+          statusBadge+
+        '</div>'+
+        '<div class="m-main">'+
+          '<div class="m-big">'+nf(m.w,1)+'<small>kg</small></div>'+
+          '<div style="color:var(--line);font-size:20px">/</div>'+
+          '<div class="m-big" style="color:var(--teal)">'+nf(m.bf,1)+'<small>%</small></div>'+
+          '<span class="pill n" style="margin-left:auto">BMI '+nf(m.bmi,1)+'</span>'+
+        '</div>'+
+        '<div class="tiny muted" style="margin-bottom:10px">'+
+          '目標組成：純脂肪 <b>'+nf(m.fat,1)+' kg</b> · 瘦體重 <b>'+nf(m.lbm,1)+' kg</b>'+
+        '</div>'+
+        '<div class="m-pbar">'+
+          '<div class="m-pbar-lbl">'+
+            '<span>體重 ('+nf(prevW,0)+'→'+nf(m.w,0)+'kg)</span>'+
+            '<span>'+(wRem<=0?'<b style="color:var(--green)">✓ 達成</b>':'還差 <b>'+nf(wRem,1)+' kg</b> ('+Math.round(wCumPct)+'%)')+'</span>'+
+          '</div>'+
+          '<div class="bar"><i style="width:'+wCumPct.toFixed(1)+'%"></i></div>'+
+        '</div>'+
+        '<div class="m-pbar">'+
+          '<div class="m-pbar-lbl">'+
+            '<span>體脂 ('+nf(prevBf,1)+'→'+nf(m.bf,0)+'%)</span>'+
+            '<span>'+(bfRem<=0?'<b style="color:var(--green)">✓ 達成</b>':'還差 <b>'+nf(bfRem,1)+'%</b> ('+Math.round(bfCumPct)+'%)')+'</span>'+
+          '</div>'+
+          '<div class="bar"><i style="width:'+bfCumPct.toFixed(1)+'%;background:var(--teal)"></i></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="m-foot">💡 '+esc(m.tip)+'</div>'+
+    '</div>';
+  }).join("");
+
+  host.innerHTML = masterHtml + '<div class="grid g3">'+stageCards+'</div>';
 }
 
 function renderCharts(){
@@ -1328,7 +1560,31 @@ function renderBodyCompBadge(d, dv){
   } else {
     parts.push('<span class="faint">輸入晨起體重與體脂率，自動推導瘦體重與護欄狀態；於「基線」填寫身高可自動換算 BMI。</span>');
   }
-  el.innerHTML = parts.join("　");
+
+  var b = getCurrentBody(dv, d);
+  var actM = MILESTONES[0];
+  for(var i=0;i<MILESTONES.length;i++){
+    if(b.w > MILESTONES[i].w || b.bf > MILESTONES[i].bf){ actM = MILESTONES[i]; break; }
+    if(i===MILESTONES.length-1) actM = MILESTONES[i];
+  }
+  var wPct = b.w <= actM.w ? 100 : clamp((b.w0 - b.w)/Math.max(0.1, b.w0 - actM.w)*100, 0, 100);
+  var bfPct = b.bf <= actM.bf ? 100 : clamp((b.bf0 - b.bf)/Math.max(0.1, b.bf0 - actM.bf)*100, 0, 100);
+  var wDiff = Math.max(0, b.w - actM.w);
+  var bfDiff = Math.max(0, b.bf - actM.bf);
+
+  var mBarHtml =
+    '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line-soft)">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;font-size:12px">'+
+        '<span>🎯 <b>里程碑進度（2026Q4 ➔ 2027Q1 ➔ 2027Q2）</b> · 當前鎖定 <span class="pill t">'+esc(actM.label)+'：'+nf(actM.w,0)+'kg / '+nf(actM.bf,0)+'%</span></span>'+
+        '<span class="num muted">距離 '+esc(actM.label)+'：體重'+(wDiff<=0?' <b style="color:var(--green)">✓達標</b>':'還差 <b>'+nf(wDiff,1)+' kg</b> ('+Math.round(wPct)+'%)')+' · 體脂'+(bfDiff<=0?' <b style="color:var(--green)">✓達標</b>':'還差 <b>'+nf(bfDiff,1)+'%</b> ('+Math.round(bfPct)+'%)')+'</span>'+
+      '</div>'+
+      '<div class="grid g2" style="gap:10px">'+
+        '<div><div class="bar"><i style="width:'+wPct.toFixed(1)+'%"></i></div></div>'+
+        '<div><div class="bar"><i style="width:'+bfPct.toFixed(1)+'%;background:var(--teal)"></i></div></div>'+
+      '</div>'+
+    '</div>';
+
+  el.innerHTML = '<div>'+parts.join("　")+'</div>' + mBarHtml;
 }
 
 function renderMfpSummary(d, type, dv){
