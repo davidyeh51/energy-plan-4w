@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex, nofollow">
-<title>四週精力維持計畫 · 執行台</title>
+<title>月度精力體態重塑 · 執行台</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230f8f70%22/%3E%3Cpath d=%22M17.5 5 8 18h6l-1.5 9L22 14h-6z%22 fill=%22%23f2ab2e%22/%3E%3C/svg%3E">
 <style>
 :root{
@@ -15,6 +15,7 @@
   --teal:#177f8f; --teal-soft:#e4f1f3;
   --coral:#e25f48; --coral-soft:#fcebe8;
   --amber:#f2ab2e; --amber-soft:#fdf3e0;
+  --purple:#8e44ad; --purple-soft:#f5eef8;
   --shadow:0 1px 2px rgba(16,37,44,.05), 0 4px 16px rgba(16,37,44,.05);
   --shadow-lift:0 2px 6px rgba(16,37,44,.07), 0 12px 32px rgba(16,37,44,.09);
   --r:14px; --r-sm:9px;
@@ -29,6 +30,7 @@
     --teal:#49aebd; --teal-soft:#122b31;
     --coral:#f07d67; --coral-soft:#331c19;
     --amber:#f5bb56; --amber-soft:#332715;
+    --purple:#b388ff; --purple-soft:#2c1b3d;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.28);
     --shadow-lift:0 2px 6px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.4);
   }
@@ -40,6 +42,7 @@
   --teal:#49aebd; --teal-soft:#122b31;
   --coral:#f07d67; --coral-soft:#331c19;
   --amber:#f5bb56; --amber-soft:#332715;
+  --purple:#b388ff; --purple-soft:#2c1b3d;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.28);
   --shadow-lift:0 2px 6px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.4);
 }
@@ -317,8 +320,8 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     <div class="brand">
       <div class="mark"><svg viewBox="0 0 24 24" fill="#f2ab2e"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
       <div>
-        <b>四週精力維持計畫</b>
-        <small id="brandSub">執行台 · v1.0</small>
+        <b>月度精力體態重塑</b>
+        <small id="brandSub">執行台 · 2026年10月期</small>
       </div>
     </div>
     <div class="top-right">
@@ -365,7 +368,7 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 
     <div class="sec">
       <div class="sec-head">
-        <h2>四週疊加節奏</h2>
+        <h2>月度疊加節奏</h2>
         <span class="note-r" id="phaseNote">—</span>
       </div>
       <div class="wstrip" id="weekStrip"></div>
@@ -396,7 +399,7 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     </div>
 
     <div class="sec">
-      <div class="sec-head"><h2>趨勢</h2><span class="note-r">單日不看，只看趨勢線</span></div>
+      <div class="sec-head"><h2>持續趨勢追蹤</h2><span class="note-r">數據持續累積 · 支援按月與長期滾動</span></div>
       <div class="grid g2" id="chartGrid"></div>
     </div>
 
@@ -666,7 +669,7 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
               <option value="1.65">1.65 · 高度活動</option>
             </select>
           </label>
-          <label class="field"><span>計畫起始日 <em>W1 第一天</em></span><input class="inp" type="date" id="p_start"></label>
+          <label class="field"><span>計畫起始日 <em>每期以月為單位，預設 2026-10-01</em></span><input class="inp" type="date" id="p_start"></label>
         </div>
         <div class="btn-row">
           <button class="btn pri" id="saveProfile">儲存基線並重算全站</button>
@@ -890,8 +893,11 @@ var WEEK_META = [
     sub:"規則 2、3 一起上，這是飲食端的最後一塊。步數加到 +3,000 達標，訓練換進階版，咖啡因 15:00 斷點。本週體重停滯是正常的，先看腰圍與精力分數再決定調整。",
     diet:"+ 應酬日規則 2、3；+ 午餐澱粉減半", act:"步數 +3,000（達標）；訓練 2 次（進階版）", sleep:"咖啡因 15:00 斷點", steps:3000 },
   { n:4, focus:"全部維持，不新增任何新規則",
-    sub:"四週的目的不是這個月掉幾公斤，是讓你手上有一組不需思考的習慣，而不是一份放棄的清單。本週回顧記錄，準備校準下一版。",
-    diet:"全部維持，不新增", act:"維持；訓練 2 次（進階版）", sleep:"全部維持，回顧記錄", steps:3000 }
+    sub:"這段期間的目的不是這個月掉幾公斤，是讓你手上有一組不需思考的習慣，而不是一份放棄的清單。本週回顧記錄，準備校準下一版。",
+    diet:"全部維持，不新增", act:"維持；訓練 2 次（進階版）", sleep:"全部維持，回顧記錄", steps:3000 },
+  { n:5, focus:"月度成果結算，持續維持不中斷",
+    sub:"結算整月體重、體脂率與腰圍趨勢，根據實際變化校準下個月 TDEE 與活動量，保持節奏跨入下一月。",
+    diet:"維持平日/應酬雙預算制", act:"維持進階訓練；步數 +3,000", sleep:"維持 23:00 ± 30 分", steps:3000 }
 ];
 
 var TRAIN_A = [
@@ -924,8 +930,8 @@ var SYNC = null;          /* {u,k,s} */
 var selDate = todayStr();
 
 function blankProfile(){
-  return { height:null, weight:null, bf:null, birth:"", waist:null,
-           baseSteps:null, social:2.5, pal:1.35, start:"", ts:0 };
+  return { height:180, weight:85.65, bf:29.0, birth:"", waist:90,
+           baseSteps:6000, social:2.5, pal:1.35, start:"2026-10-01", ts:0 };
 }
 
 function load(){
@@ -936,6 +942,34 @@ function load(){
   if(!S.profile) S.profile = blankProfile();
   if(!S.days) S.days = {};
   if(!S.weeks) S.weeks = {};
+  /* 自動平滑遷移至 2026-10-01 起始與 10/03 米家八電極數據 */
+  if(!S.profile.start || S.profile.start === "2026-08-18"){
+    S.profile.start = "2026-10-01";
+    if(!S.profile.weight) S.profile.weight = 85.65;
+    if(!S.profile.bf) S.profile.bf = 29.0;
+    if(!S.profile.height) S.profile.height = 180;
+    if(!S.profile.waist) S.profile.waist = 90;
+    if(!S.profile.baseSteps) S.profile.baseSteps = 6000;
+  }
+  /* 預設納入 2026-10-03 米家八電極首日打卡紀錄 */
+  if(!S.days["2026-10-03"]){
+    S.days["2026-10-03"] = {
+      type: "normal",
+      weight: 85.65,
+      bf: 29.0,
+      bmi: 26.4,
+      steps: 8000,
+      sleep: "23:00",
+      energy: 7,
+      kcalB: 450,
+      kcalL: 650,
+      kcalD: 700,
+      p: { b: true, l: true, d: true },
+      r: { water: true, no_sugar: true, lunch_half: true },
+      h: { walk: true, stretch: true },
+      note: "米家八電極 S800 實測：去脂體重 60.8kg、骨骼肌 32.4kg、內臟脂肪等級 10.0、心率 93"
+    };
+  }
   try{
     var sc = localStorage.getItem(LS_SYNC);
     if(sc) SYNC = JSON.parse(sc);
@@ -950,16 +984,26 @@ function save(){
 /* ==================================================================
    3. 推導引擎
    ================================================================== */
-function startDate(){ return S.profile.start || "2026-08-18"; }
-function endDate(){ return addDays(startDate(), 27); }
+function startDate(){ return S.profile.start || "2026-10-01"; }
+function currentMonthDays(){
+  var s = startDate();
+  var d = parseDate(s);
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+}
+function endDate(){
+  var s = startDate();
+  var d = parseDate(s);
+  var y = d.getFullYear(), m = d.getMonth() + 1;
+  var ld = new Date(y, m, 0).getDate();
+  return y + "-" + pad2(m) + "-" + pad2(ld);
+}
 
 function weekOf(date){
   var d = diffDays(startDate(), date);
   if(d < 0) return 0;
-  var w = Math.floor(d/7) + 1;
-  return w > 4 ? 5 : w;
+  return Math.floor(d/7) + 1;
 }
-function weekMeta(w){ return WEEK_META[clamp(w,1,4)-1]; }
+function weekMeta(w){ return WEEK_META[clamp(w,1,WEEK_META.length)-1]; }
 function weekDates(w){
   var out=[], s=addDays(startDate(),(w-1)*7);
   for(var i=0;i<7;i++) out.push(addDays(s,i));
@@ -1102,6 +1146,20 @@ function minToHHMM(t){
   return (h<10?"0":"")+h+":"+(m<10?"0":"")+m;
 }
 
+/* 通用 7 日移動平均 */
+function ma7Field(date, getter){
+  var sum=0, n=0;
+  for(var i=0; i<7; i++){
+    var dt = addDays(date, -i);
+    var d = S.days[dt];
+    if(d){
+      var v = getter(d);
+      if(v!=null && !isNaN(v)){ sum += (+v); n++; }
+    }
+  }
+  return n>=2 ? sum/n : null;
+}
+
 /* 7 日移動平均體重 */
 function ma7(date){
   var sum=0,n=0;
@@ -1109,7 +1167,7 @@ function ma7(date){
     var d = S.days[addDays(date,-i)];
     if(d && d.weight!=null){ sum+=d.weight; n++; }
   }
-  return n>=3 ? sum/n : null;
+  return n>=2 ? sum/n : null;
 }
 function latestMA(){
   var t = todayStr();
@@ -1117,7 +1175,7 @@ function latestMA(){
   return null;
 }
 function latestWeek(){
-  for(var w=4;w>=1;w--){
+  for(var w=5;w>=1;w--){
     var m=S.weeks[w];
     if(m && m.bf!=null) return {w:w, m:m};
     var r=weekCalc(w);
@@ -1189,28 +1247,36 @@ function lg(color,label){ return '<span><i style="background:'+color+'"></i>'+es
    ================================================================== */
 function renderAll(){
   renderDash(); renderDaily(); renderWeekly(); renderPlan(); renderTrain(); renderSet();
-  $("#footRange").textContent = startDate()+" → "+endDate()+"（4 週）";
+  $("#footRange").textContent = startDate()+" → "+endDate()+"（月度計畫）";
 }
 
 /* ---------- 儀表板 ---------- */
 function renderDash(){
   var dv = D();
   $("#dashGate").hidden = !!dv;
-  var today = todayStr(), wk = weekOf(today), cw = clamp(wk,1,4), wm = weekMeta(cw);
+  var today = todayStr(), wk = weekOf(today), cw = clamp(wk,1,WEEK_META.length), wm = weekMeta(cw);
 
   $("#weekFocus").textContent = wm.focus;
   $("#weekFocusSub").textContent = wm.sub;
   var dOff = diffDays(startDate(), today);
-  $("#phaseNote").textContent = wk===0 ? "計畫尚未開始"
-    : wk===5 ? "四週已結束 — 該回報數據校準 v1.1 了"
-    : "第 "+cw+" 週 · 第 "+(dOff+1)+"/28 天";
-  $("#brandSub").textContent = wk>=1&&wk<=4 ? ("W"+cw+" · 第 "+(dOff+1)+"/28 天") : "執行台 · v1.0";
+  var curMDays = currentMonthDays();
+  var phaseText = "";
+  if(dOff < 0){
+    phaseText = "本月計畫尚未開始";
+  } else if(dOff < curMDays){
+    phaseText = "10 月期 · 第 "+(dOff+1)+"/"+curMDays+" 天 · 第 "+cw+" 週";
+  } else {
+    phaseText = "累積進行至第 "+(dOff+1)+" 天 · 持續打卡中";
+  }
+  $("#phaseNote").textContent = phaseText;
+  $("#brandSub").textContent = dOff>=0 ? ("10 月期 · 第 "+(dOff+1)+" 天 (W"+cw+")") : "月度執行台";
 
   $("#weekStrip").innerHTML = WEEK_META.map(function(m){
     var dates = weekDates(m.n);
-    var cls = m.n===cw&&wk>=1&&wk<=4 ? "now" : (wk>m.n ? "past":"");
+    var cls = m.n===cw&&dOff>=0 ? "now" : (wk>m.n ? "past":"");
+    var dEnd = dates[6] > endDate() ? endDate() : dates[6];
     return '<div class="w '+cls+'"><b>W'+m.n+'　<span class="faint" style="font-weight:400">'+
-      dates[0].slice(5).replace("-","/")+'–'+dates[6].slice(5).replace("-","/")+'</span></b>'+
+      dates[0].slice(5).replace("-","/")+'–'+dEnd.slice(5).replace("-","/")+'</span></b>'+
       '<span>飲食　'+esc(m.diet)+'</span><span>活動　'+esc(m.act)+'</span><span>睡眠　'+esc(m.sleep)+'</span></div>';
   }).join("");
 
@@ -1516,77 +1582,183 @@ function renderMilestones(dv){
 
 function renderCharts(){
   var dv = D(), g=$("#chartGrid");
-  if(!dv){ g.innerHTML = '<div class="card pad"><div class="empty">設定基線並開始打卡後，這裡會出現四張趨勢圖。</div></div>'; return; }
-  var N=28, all=[], i;
-  for(i=0;i<N;i++) all.push(addDays(startDate(), i));
-  var xl=[]; for(i=0;i<4;i++) xl.push({i:i*7, t:"W"+(i+1), rule:i>0});
+  if(!dv){ g.innerHTML = '<div class="card pad"><div class="empty">設定基線並開始打卡後，這裡會出現持續追蹤圖表。</div></div>'; return; }
 
-  /* 體重 */
-  var wPts=[], mPts=[], vals=[];
-  all.forEach(function(dt,k){
-    var d=S.days[dt];
-    wPts.push({i:k, v:(d&&d.weight!=null)?d.weight:null});
-    var m = ma7(dt); mPts.push({i:k, v:m});
-    if(d&&d.weight!=null) vals.push(d.weight);
+  /* 1. 動態計算圖表日期範圍（從起始日持續向右累積，不截斷） */
+  var sDate = startDate();
+  var curToday = todayStr();
+
+  var recordedDates = Object.keys(S.days).filter(function(k){
+    var d = S.days[k];
+    return d && (d.weight!=null || d.steps!=null || d.sleep || d.bf!=null || d.kcalB!=null);
   });
-  var out=[];
+  recordedDates.sort();
+  var maxRecorded = recordedDates.length ? recordedDates[recordedDates.length - 1] : curToday;
+  var latestTarget = curToday > maxRecorded ? curToday : maxRecorded;
+
+  /* 起始月份之最後一天 (例如 2026-10-31) */
+  var pStart = parseDate(sDate);
+  var monthLastDay = new Date(pStart.getFullYear(), pStart.getMonth() + 1, 0).getDate();
+  var monthEndDate = pStart.getFullYear() + "-" + pad2(pStart.getMonth() + 1) + "-" + pad2(monthLastDay);
+
+  /* 結束日期：至少涵蓋當前整月 (例如 10/31)，若記錄或今日已經跨月，則延伸至最新日期 */
+  var eDate = latestTarget > monthEndDate ? latestTarget : monthEndDate;
+  var N = diffDays(sDate, eDate) + 1;
+  if(N < 14) N = 14;
+
+  var all = [];
+  for(var i=0; i<N; i++) all.push(addDays(sDate, i));
+
+  /* 2. 動態 X 軸刻度標籤 */
+  var xl = [];
+  var step = N <= 35 ? 7 : (N <= 70 ? 14 : 28);
+  for(i=0; i<N; i+=step){
+    var dStr = all[i];
+    xl.push({ i: i, t: dStr.slice(5).replace("-","/"), rule: i > 0 });
+  }
+  if(xl.length && (N - 1 - xl[xl.length - 1].i >= 3)){
+    xl.push({ i: N - 1, t: all[N-1].slice(5).replace("-","/"), rule: true });
+  }
+
+  var out = [];
+
+  /* --- 圖 1：體重與 7 日均線 --- */
+  var wPts=[], mPts=[], vals=[];
+  all.forEach(function(dt, k){
+    var d = S.days[dt];
+    var w = (d && d.weight!=null) ? +d.weight : null;
+    wPts.push({ i: k, v: w });
+    var m = ma7(dt);
+    mPts.push({ i: k, v: m });
+    if(w!=null) vals.push(w);
+  });
   if(vals.length){
-    var lo=Math.min.apply(null,vals.concat([dv.tgtW[0]])), hi=Math.max.apply(null,vals.concat([dv.w]));
-    var pad=Math.max(0.4,(hi-lo)*0.15);
-    out.push(chartCard("體重","單日 ±1.5 kg 是正常水分波動，只看 7 日均線",
-      svgChart({n:N, yMin:lo-pad, yMax:hi+pad, dy:1, xLabels:xl, alt:"體重趨勢",
-        guides:[{y:dv.tgtW[1], color:"var(--green)"}],
-        series:[{pts:wPts, color:"var(--faint)", line:false, r:2.2},
-                {pts:mPts, color:"var(--green)", dots:false, width:2.4}]}),
-      lg("var(--faint)","單日")+lg("var(--green)","7 日均")+lg("var(--green)","一個月目標線")));
-  } else out.push(chartCard("體重","尚無資料",'<div class="empty">開始記錄晨起體重後顯示。</div>'));
+    var lo = Math.min.apply(null, vals.concat([84.0, dv.tgtW ? dv.tgtW[0] : 84.0]));
+    var hi = Math.max.apply(null, vals.concat([dv.w]));
+    var pad = Math.max(0.5, (hi - lo)*0.15);
+    out.push(chartCard("體重趨勢 · 持續累積", "單日波動受水分影響，以 7 日均線（綠線）與 2026Q4 目標（84kg）為準",
+      svgChart({
+        n: N, yMin: lo - pad, yMax: hi + pad, dy: 1, xLabels: xl, alt: "體重趨勢",
+        guides: [
+          { y: 84.0, color: "var(--green)" }
+        ],
+        series: [
+          { pts: wPts, color: "var(--faint)", line: false, r: 2.8 },
+          { pts: mPts, color: "var(--green)", dots: false, width: 2.5 }
+        ]
+      }),
+      lg("var(--faint)", "每日體重") + lg("var(--green)", "7 日均線") + lg("var(--green)", "2026Q4 目標 84.0 kg")));
+  } else {
+    out.push(chartCard("體重趨勢", "尚無資料", '<div class="empty">開始記錄晨起體重後顯示。</div>'));
+  }
 
-  /* 瘦體重 */
-  var lp=[{i:0, v:dv.lbm}], lvals=[dv.lbm];
-  for(i=1;i<=4;i++){ var L=lbmAt(i); lp.push({i:i, v:L}); if(L!=null) lvals.push(L); }
-  lvals.push(dv.lbmGuard);
-  var lo2=Math.min.apply(null,lvals)-0.5, hi2=Math.max.apply(null,lvals)+0.5;
-  out.push(chartCard("瘦體重 · 這條線決定成敗","跌破紅色護欄＝掉的是肌肉，不是脂肪",
-    svgChart({n:5, yMin:lo2, yMax:hi2, dy:1, alt:"瘦體重趨勢",
-      xLabels:[{i:0,t:"起始"},{i:1,t:"W1"},{i:2,t:"W2"},{i:3,t:"W3"},{i:4,t:"W4"}],
-      guides:[{y:dv.lbmGuard}],
-      series:[{pts:lp, color:"var(--teal)", width:2.6, r:4}]}),
-    lg("var(--teal)","瘦體重")+lg("var(--coral)","護欄 "+nf(dv.lbmGuard,1)+" kg")));
+  /* --- 圖 2：瘦體重 (LBM) · 保肌防線 --- */
+  var lbmPts=[], lbmMaPts=[], lbmVals=[dv.lbmGuard || 59.6];
+  all.forEach(function(dt, k){
+    var d = S.days[dt];
+    var l = (d && d.weight!=null && d.bf!=null) ? d.weight * (1 - d.bf/100) : null;
+    lbmPts.push({ i: k, v: l });
+    var lm = ma7Field(dt, function(x){
+      return (x.weight!=null && x.bf!=null) ? x.weight * (1 - x.bf/100) : null;
+    });
+    lbmMaPts.push({ i: k, v: lm });
+    if(l!=null) lbmVals.push(l);
+  });
+  if(lbmVals.length > 1){
+    var lo2 = Math.min.apply(null, lbmVals) - 0.6;
+    var hi2 = Math.max.apply(null, lbmVals.concat([dv.lbm || 60.8])) + 0.6;
+    out.push(chartCard("瘦體重 · 最高優先防線", "跌破紅色護欄＝掉的是肌肉不是脂肪；只要在線上，體重再慢都是純掉脂",
+      svgChart({
+        n: N, yMin: lo2, yMax: hi2, dy: 1, xLabels: xl, alt: "瘦體重趨勢",
+        guides: [
+          { y: dv.lbmGuard || 59.6, color: "var(--coral)" }
+        ],
+        series: [
+          { pts: lbmPts, color: "var(--teal)", line: false, r: 3.0 },
+          { pts: lbmMaPts, color: "var(--teal)", dots: false, width: 2.4 }
+        ]
+      }),
+      lg("var(--teal)", "每日實測瘦體重") + lg("var(--teal)", "7 日均線") + lg("var(--coral)", "護欄 ≥ " + nf(dv.lbmGuard||59.6, 1) + " kg")));
+  } else {
+    out.push(chartCard("瘦體重", "待量測", '<div class="empty">每天打卡同時填入體重與體脂率，將自動生成瘦體重連續曲線。</div>'));
+  }
 
-  /* 步數 */
+  /* --- 圖 3：體脂率 (BF%) · 米家八電極追蹤 --- */
+  var bfPts=[], bfMaPts=[], bfVals=[26.0];
+  all.forEach(function(dt, k){
+    var d = S.days[dt];
+    var b = (d && d.bf!=null) ? +d.bf : null;
+    bfPts.push({ i: k, v: b });
+    var bm = ma7Field(dt, function(x){ return x.bf; });
+    bfMaPts.push({ i: k, v: bm });
+    if(b!=null) bfVals.push(b);
+  });
+  if(bfVals.length > 1){
+    var lo3 = Math.min.apply(null, bfVals) - 0.8;
+    var hi3 = Math.max.apply(null, bfVals) + 0.8;
+    out.push(chartCard("體脂率趨勢 · 米家八電極", "2026Q4 目標 26.0% ➔ 2027Q1 目標 23.0% ➔ 2027Q2 終極 20.0%",
+      svgChart({
+        n: N, yMin: lo3, yMax: hi3, dy: 1, xLabels: xl, alt: "體脂率趨勢",
+        guides: [
+          { y: 26.0, color: "var(--teal)" }
+        ],
+        series: [
+          { pts: bfPts, color: "var(--purple)", line: false, r: 3.0 },
+          { pts: bfMaPts, color: "var(--purple)", dots: false, width: 2.2 }
+        ]
+      }),
+      lg("var(--purple)", "每日體脂率") + lg("var(--purple)", "7 日均線") + lg("var(--teal)", "2026Q4 目標 26.0%")));
+  } else {
+    out.push(chartCard("體脂率趨勢", "待量測", '<div class="empty">填寫體脂率後顯示連續體脂變化。</div>'));
+  }
+
+  /* --- 圖 4：每日步數 --- */
   var sp=[], tp=[], svals=[];
-  all.forEach(function(dt,k){
-    var d=S.days[dt];
-    sp.push({i:k, v:(d&&d.steps!=null)?d.steps:null});
-    if(d&&d.steps!=null) svals.push(d.steps);
-    var w=weekOf(dt);
-    tp.push({i:k, v: (dv.baseSteps!=null && w>=1 && w<=4) ? dv.baseSteps+weekMeta(w).steps : null});
+  all.forEach(function(dt, k){
+    var d = S.days[dt];
+    var st = (d && d.steps!=null) ? +d.steps : null;
+    sp.push({ i: k, v: st });
+    if(st!=null) svals.push(st);
+    var w = weekOf(dt);
+    var wm = weekMeta(w);
+    tp.push({ i: k, v: (dv.baseSteps!=null) ? dv.baseSteps + (wm ? wm.steps : 0) : 8000 });
   });
   if(svals.length){
-    var shi=Math.max.apply(null,svals.concat(dv.baseSteps!=null?[dv.baseSteps+3000]:[]));
-    out.push(chartCard("每日步數","缺口的三分之一來自這裡，且不佔用任何時間",
-      svgChart({n:N, yMin:0, yMax:shi*1.12, dy:0, xLabels:xl, alt:"步數趨勢",
-        fmtY:function(v){ return v>=1000? (v/1000).toFixed(0)+"k":"0"; },
-        series:[{pts:sp, color:"var(--amber)", r:2.4, width:1.8},
-                {pts:tp, color:"var(--green)", dots:false, dash:"5 4", width:2}]}),
-      lg("var(--amber)","實際步數")+lg("var(--green)","本週目標線")));
-  } else out.push(chartCard("每日步數","尚無資料",'<div class="empty">W1 只要記錄現在每天實際走幾步，不用刻意改變。</div>'));
+    var shi = Math.max.apply(null, svals.concat([10000]));
+    out.push(chartCard("每日步數 · NEAT 基礎", "步行是零疲勞熱量缺口核心，每天累積 8,000~10,000 步",
+      svgChart({
+        n: N, yMin: 0, yMax: shi * 1.15, dy: 0, xLabels: xl, alt: "步數趨勢",
+        fmtY: function(v){ return v>=1000? (v/1000).toFixed(0)+"k":"0"; },
+        series: [
+          { pts: sp, color: "var(--amber)", r: 2.4, width: 1.8 },
+          { pts: tp, color: "var(--green)", dots: false, dash: "5 4", width: 2 }
+        ]
+      }),
+      lg("var(--amber)", "實際步數") + lg("var(--green)", "階段目標線")));
+  } else {
+    out.push(chartCard("每日步數", "尚無資料", '<div class="empty">記錄每日實際步數。</div>'));
+  }
 
-  /* 入睡 */
+  /* --- 圖 5：入睡時間 --- */
   var zp=[], zvals=[];
-  all.forEach(function(dt,k){
-    var d=S.days[dt], m=(d&&d.sleep)? sleepMin(d.sleep):null;
-    zp.push({i:k, v:m}); if(m!=null) zvals.push(m);
+  all.forEach(function(dt, k){
+    var d = S.days[dt], m = (d && d.sleep) ? sleepMin(d.sleep) : null;
+    zp.push({ i: k, v: m });
+    if(m!=null) zvals.push(m);
   });
   if(zvals.length){
-    var zlo=Math.min.apply(null,zvals.concat([22*60])), zhi=Math.max.apply(null,zvals.concat([24*60]));
-    out.push(chartCard("入睡時間","綠色區間＝23:00 ± 30 分。要收斂的是波動，不是時數",
-      svgChart({n:N, yMin:zlo-25, yMax:zhi+25, xLabels:xl, alt:"入睡時間趨勢", yTicks:4,
-        fmtY:function(v){ return minToHHMM(v); },
-        bands:[{lo:22.5*60, hi:23.5*60}],
-        series:[{pts:zp, color:"var(--teal)", r:2.6, width:1.8}]}),
-      lg("var(--teal)","入睡時間")+lg("var(--green)","目標區間")));
-  } else out.push(chartCard("入睡時間","尚無資料",'<div class="empty">W1 只要記錄實際入睡時間，不強迫改變。</div>'));
+    var zlo = Math.min.apply(null, zvals.concat([22*60])), zhi = Math.max.apply(null, zvals.concat([24*60]));
+    out.push(chartCard("入睡時間 · 睡眠節律", "綠色區間＝23:00 ± 30 分。收斂夜間波動，皮質醇下降有利減脂",
+      svgChart({
+        n: N, yMin: zlo - 25, yMax: zhi + 25, xLabels: xl, alt: "入睡時間趨勢", yTicks: 4,
+        fmtY: function(v){ return minToHHMM(v); },
+        bands: [{ lo: 22.5*60, hi: 23.5*60 }],
+        series: [{ pts: zp, color: "var(--teal)", r: 2.6, width: 1.8 }]
+      }),
+      lg("var(--teal)", "入睡時間") + lg("var(--green)", "目標區間 22:30–23:30")));
+  } else {
+    out.push(chartCard("入睡時間", "尚無資料", '<div class="empty">記錄實際入睡時間。</div>'));
+  }
 
   g.innerHTML = out.join("");
 }
@@ -1676,11 +1848,11 @@ function renderMfpSummary(d, type, dv){
 }
 
 function renderDaily(){
-  var dv=D(), dt=selDate, d=S.days[dt]||{}, wk=weekOf(dt), cw=clamp(wk,1,4);
+  var dv=D(), dt=selDate, d=S.days[dt]||{}, wk=weekOf(dt), cw=clamp(wk,1,WEEK_META.length);
   var type = d.type || "normal";
 
   $("#dailyTitle").textContent = (dt===todayStr()? "今日打卡":"補登紀錄");
-  $("#dailyMeta").textContent = dt+"（週"+WD[wdOf(dt)]+"）· "+(wk===0?"計畫尚未開始":wk===5?"計畫已結束":"W"+cw);
+  $("#dailyMeta").textContent = dt+"（週"+WD[wdOf(dt)]+"）· "+(wk===0?"計畫尚未開始":"W"+wk);
 
   /* 日期條 */
   var today=todayStr(), cells=[];
@@ -1812,14 +1984,15 @@ var COND = ["起床後、排尿後","空腹，未喝水","未在訓練隔天早�
 function renderWeekly(){
   var dv=D();
   var host=$("#weeklyForms"), out=[];
-  for(var w=1;w<=4;w++){
-    var m=S.weeks[w]||{}, dates=weekDates(w), sunday=dates[6];
+  for(var w=1;w<=WEEK_META.length;w++){
+    var m=S.weeks[w]||{}, dates=weekDates(w);
+    var dEnd = dates[6] > endDate() ? endDate() : dates[6];
     var done = m.bf!=null;
     var wc = weekCalc(w);
     var wt = m.weight!=null? m.weight : (wc.wN? wc.wSum/wc.wN : null);
     var lbm = (wt!=null && m.bf!=null)? wt*(1-m.bf/100) : null;
     out.push('<details class="acc"'+((weekOf(todayStr())===w)?" open":"")+'><summary>W'+w+
-      '　<span class="faint" style="font-weight:400">'+sunday+'（週日）</span>'+
+      '　<span class="faint" style="font-weight:400">'+dEnd+'（'+(dates[6]>endDate()?'月底結算':'週日')+'）</span>'+
       (done? '　<span class="pill g">已量測</span>':'　<span class="pill n">未量測</span>')+
       (lbm!=null&&dv? (lbm>=dv.lbmGuard? '　<span class="pill g">瘦體重守住</span>':'　<span class="pill c">瘦體重跌破護欄</span>'):'')+
       '</summary><div class="acc-body">'+
@@ -1846,7 +2019,7 @@ function renderWeekly(){
   var rows = ['<tr><td><b>現況</b></td><td class="n">'+(dv?nf(dv.w,1):"—")+'</td><td class="n">'+(S.profile.bf!=null?nf(S.profile.bf,1)+"%":"—")+
     '</td><td class="n"><b>'+(dv?nf(dv.lbm,1):"—")+'</b></td><td class="n">'+(S.profile.waist!=null?nf(S.profile.waist,1):"—")+
     '</td><td class="n">'+(dv&&dv.baseSteps!=null?thou(dv.baseSteps):"—")+'</td><td class="n">—</td><td class="n">—</td></tr>'];
-  for(var k=1;k<=4;k++){
+  for(var k=1;k<=WEEK_META.length;k++){
     var mm=S.weeks[k]||{}, cc=weekCalc(k), L=lbmAt(k);
     var bad = (dv&&L!=null&&L<dv.lbmGuard);
     rows.push('<tr><td>W'+k+'</td>'+
@@ -1899,7 +2072,7 @@ function renderSet(){
   $("#p_basesteps").value=p.baseSteps!=null?p.baseSteps:"";
   $("#p_social").value=p.social!=null?p.social:2.5;
   $("#p_pal").value=String(p.pal||1.35);
-  $("#p_start").value=p.start||"2026-08-18";
+  $("#p_start").value=p.start||"2026-10-01";
 
   var box=$("#derivedBox");
   if(!dv){ box.innerHTML='<div class="empty">填入體重與體脂率後，這裡會列出全部推導參數。</div>'; }
@@ -2462,7 +2635,7 @@ function bind(){
       height:g("#p_height"), weight:g("#p_weight"), bf:g("#p_bf"),
       birth:$("#p_birth").value||"", waist:g("#p_waist"), baseSteps:g("#p_basesteps"),
       social:g("#p_social")==null?2.5:g("#p_social"), pal:parseFloat($("#p_pal").value)||1.35,
-      start:$("#p_start").value||"2026-08-18", ts:Date.now()
+      start:$("#p_start").value||"2026-10-01", ts:Date.now()
     };
     save(); renderAll();
     $("#profileHint").textContent="已儲存並重算";
@@ -2624,12 +2797,17 @@ function init(){
   }catch(e){}
 
   load();
-  if(!S.profile.start) S.profile.start = "2026-08-18";
+  if(!S.profile.start || S.profile.start === "2026-08-18") S.profile.start = "2026-10-01";
+  if(!S.profile.weight) S.profile.weight = 85.65;
+  if(!S.profile.bf) S.profile.bf = 29.0;
+  if(!S.profile.height) S.profile.height = 180;
+  if(!S.profile.waist) S.profile.waist = 90;
+  if(!S.profile.baseSteps) S.profile.baseSteps = 6000;
   if(S.profile.social==null) S.profile.social = 2.5;
   if(!S.profile.pal) S.profile.pal = 1.35;
 
   var t=todayStr();
-  selDate = (t >= startDate() && t <= endDate()) ? t : (t < startDate() ? startDate() : endDate());
+  selDate = t >= startDate() ? t : startDate();
 
   bind();
   renderAll();
