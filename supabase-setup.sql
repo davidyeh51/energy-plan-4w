@@ -68,4 +68,7 @@ revoke all on function public.ep_push(text, jsonb) from public;
 grant execute on function public.ep_pull(text)        to anon, authenticated;
 grant execute on function public.ep_push(text, jsonb) to anon, authenticated;
 
+-- 5) 即時刷新 PostgREST 結構快取
+notify pgrst, 'reload schema';
+
 -- 完成。回到網站「設定 · 同步」頁貼上同步碼即可。

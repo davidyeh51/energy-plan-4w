@@ -699,15 +699,70 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
         </div>
         <p class="small faint" id="syncStatus" style="margin-top:10px">—</p>
 
-        <details style="margin-top:14px;border:1px dashed var(--line);border-radius:var(--r-sm);padding:10px 12px">
-          <summary style="font-size:12.5px;font-weight:600;cursor:pointer;color:var(--teal)">📌 初次設定？點此輸入 Supabase 網址與金鑰直接產生同步碼</summary>
-          <div style="margin-top:10px;display:grid;gap:10px">
-            <p class="small muted">請先在 Supabase 的 SQL Editor 執行專案內的 <code>supabase-setup.sql</code>，然後將 Project Settings &gt; API 中的資訊填入下方：</p>
-            <label class="field"><span>Supabase Project URL</span><input class="inp" type="url" id="sb_url" placeholder="https://xxxxxxxx.supabase.co" style="font-size:12.5px"></label>
-            <label class="field"><span>Supabase anon / public key</span><input class="inp" type="password" id="sb_key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." style="font-size:12.5px"></label>
-            <div class="btn-row">
-              <button class="btn pri" id="btnGenSync" type="button" style="font-size:12.5px">一鍵產生同步碼並啟用</button>
+        <details style="margin-top:14px;border:1px dashed var(--line);border-radius:var(--r-sm);padding:12px" id="sbSetupDetails" open>
+          <summary style="font-size:13px;font-weight:700;cursor:pointer;color:var(--teal)">📌 重新設定或診斷 Supabase 連線？點此展開專屬設定工具</summary>
+          <div style="margin-top:12px;display:grid;gap:12px">
+            
+            <div style="background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+                <b>步驟 1：確保在 Supabase SQL Editor 執行設定腳本</b>
+                <button class="btn sm" id="btnCopySql" type="button">📋 複製完整 SQL 語法</button>
+              </div>
+              <p class="small muted" style="margin-bottom:8px">請前往 <a href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline">Supabase 後台</a> ➔ 左側選單點擊 <b>SQL Editor</b> ➔ 點擊 <b>New query</b> ➔ 貼上下方語法並點擊 <b>Run</b>：</p>
+              <textarea id="sbSqlSnippet" class="inp" readonly style="font-size:11px;min-height:95px;font-family:var(--mono);color:var(--muted);background:var(--card)">-- 建立 ep_state 表與 ep_pull / ep_push 函式（可重複執行，不覆蓋既有資料）
+create table if not exists public.ep_state (
+  space_key  text primary key,
+  doc        jsonb       not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.ep_state enable row level security;
+
+create or replace function public.ep_pull(p_key text)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare r jsonb;
+begin
+  if p_key is null or length(p_key) < 24 then raise exception 'invalid key'; end if;
+  select doc into r from public.ep_state where space_key = p_key;
+  return coalesce(r, '{}'::jsonb);
+end; $$;
+
+create or replace function public.ep_push(p_key text, p_doc jsonb)
+returns timestamptz language plpgsql security definer set search_path = public as $$
+declare t timestamptz;
+begin
+  if p_key is null or length(p_key) < 24 then raise exception 'invalid key'; end if;
+  if p_doc is null or jsonb_typeof(p_doc) <> 'object' then raise exception 'invalid doc'; end if;
+  if pg_column_size(p_doc) > 1048576 then raise exception 'doc too large'; end if;
+  insert into public.ep_state (space_key, doc, updated_at) values (p_key, p_doc, now())
+  on conflict (space_key) do update set doc = excluded.doc, updated_at = now() returning updated_at into t;
+  return t;
+end; $$;
+
+revoke all on function public.ep_pull(text)        from public;
+revoke all on function public.ep_push(text, jsonb) from public;
+grant execute on function public.ep_pull(text)        to anon, authenticated;
+grant execute on function public.ep_push(text, jsonb) to anon, authenticated;
+notify pgrst, 'reload schema';</textarea>
             </div>
+
+            <div style="background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px">
+              <b>步驟 2：填寫 Project URL 與 anon 金鑰</b>
+              <p class="small muted" style="margin-bottom:8px">在 Supabase 後台左側齒輪（Project Settings）➔ API 複製兩項資訊：</p>
+              <label class="field" style="margin-bottom:8px">
+                <span>Supabase Project URL <em>格式如：https://xxxxxxxxxxxx.supabase.co</em></span>
+                <input class="inp" type="url" id="sb_url" placeholder="https://xxxxxxxx.supabase.co" style="font-size:12.5px">
+              </label>
+              <label class="field" style="margin-bottom:10px">
+                <span>Supabase anon / public key <em>一段很長的字串，開頭為 eyJ...</em></span>
+                <input class="inp" type="password" id="sb_key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." style="font-size:12.5px">
+              </label>
+              <div class="btn-row">
+                <button class="btn" id="btnTestSync" type="button" style="font-size:12.5px">🔍 測試連線與診斷</button>
+                <button class="btn pri" id="btnGenSync" type="button" style="font-size:12.5px">⚡ 一鍵產生同步碼並啟用</button>
+              </div>
+              <div id="syncDiagResult" style="margin-top:10px;font-size:12.5px;display:none;line-height:1.6"></div>
+            </div>
+
           </div>
         </details>
       </div>
@@ -2073,25 +2128,56 @@ function syncBadge(cls, txt){
 }
 function renderSyncUI(){
   var st=$("#syncStatus");
-  if(!SYNC){ syncBadge("","本機"); st.innerHTML='目前<b>只存在這台裝置的瀏覽器</b>。清除瀏覽器資料會遺失紀錄，建議至少定期匯出 JSON 備份。'; $("#s_code").value=""; return; }
+  if(!SYNC){
+    syncBadge("","本機");
+    st.innerHTML='目前<b>只存在這台裝置的瀏覽器</b>。清除瀏覽器資料會遺失紀錄，建議至少定期匯出 JSON 備份。';
+    $("#s_code").value="";
+    return;
+  }
   syncBadge("ok","已同步");
   st.innerHTML='已連結同步空間 <b class="num">'+esc(SYNC.s.slice(0,8))+'…</b>　·　'+esc(SYNC.u.replace(/^https?:\/\//,""))+
     (SYNC.last? '　·　最後同步 '+new Date(SYNC.last).toLocaleString("zh-TW"):'');
+  if($("#sb_url") && !$("#sb_url").value) $("#sb_url").value = SYNC.u;
+  if($("#sb_key") && !$("#sb_key").value) $("#sb_key").value = SYNC.k;
 }
 function cleanSupabaseUrl(u){
   if(!u) return "";
   return String(u).trim().replace(/\/+$/, "").replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
 }
-function rpc(fn, body){
-  if(!SYNC) return Promise.reject(new Error("未設定同步"));
-  var base = cleanSupabaseUrl(SYNC.u);
+function formatSupabaseError(status, text){
+  var msg = text || "";
+  if(status === 404 || /PGRST202/i.test(msg) || /Could not find the function/i.test(msg)){
+    return "找不到 ep_pull / ep_push 函式（HTTP 404）。請確認是否已在 Supabase 後台 SQL Editor 執行設定腳本。";
+  }
+  if(status === 401 || /Invalid API key/i.test(msg) || /JWT/i.test(msg)){
+    return "API 金鑰無效或打錯（HTTP 401）。請至 Supabase Project Settings > API 重新複製 anon / public 金鑰。";
+  }
+  if(status === 503 || status === 500){
+    return "Supabase 伺服器異常或專案休眠中（HTTP "+status+"）。請登入 Supabase 後台確認專案是否顯示 Paused 並點擊 Restore 喚醒。";
+  }
+  if(/invalid key/i.test(msg)){
+    return "同步密鑰長度不符合規範，請點擊重新產生同步碼。";
+  }
+  return "HTTP " + status + " " + msg.slice(0, 140);
+}
+function rpc(fn, body, customAuth){
+  var auth = customAuth || SYNC;
+  if(!auth) return Promise.reject(new Error("未設定同步"));
+  var base = cleanSupabaseUrl(auth.u);
   return fetch(base+"/rest/v1/rpc/"+fn, {
     method:"POST",
-    headers:{ "Content-Type":"application/json", "apikey":SYNC.k.trim(), "Authorization":"Bearer "+SYNC.k.trim() },
+    headers:{ "Content-Type":"application/json", "apikey":auth.k.trim(), "Authorization":"Bearer "+auth.k.trim() },
     body: JSON.stringify(body)
   }).then(function(r){
-    if(!r.ok) return r.text().then(function(t){ throw new Error("HTTP "+r.status+" "+t.slice(0,140)); });
+    if(!r.ok){
+      return r.text().then(function(t){ throw new Error(formatSupabaseError(r.status, t)); });
+    }
     return r.json();
+  }).catch(function(err){
+    if(/Failed to fetch|NetworkError/i.test(err.message)){
+      throw new Error("無法連線到 Supabase 伺服器（可能是網址錯誤、網路中斷，或專案休眠中）。請檢查 Project URL。");
+    }
+    throw err;
   });
 }
 function mergeDoc(remote){
@@ -2410,6 +2496,69 @@ function bind(){
     if(!confirm("停用同步？本機紀錄會保留，雲端資料不會刪除。")) return;
     SYNC=null; localStorage.removeItem(LS_SYNC); renderSyncUI(); toast("已停用同步");
   });
+  $("#btnCopySql").addEventListener("click", function(){
+    var snippet = $("#sbSqlSnippet");
+    if(!snippet) return;
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(snippet.value).then(function(){
+        toast("SQL 語法已複製到剪貼簿！");
+      }, function(){
+        snippet.select();
+        toast("請按 Ctrl+C 複製");
+      });
+    } else {
+      snippet.select();
+      toast("請按 Ctrl+C 複製");
+    }
+  });
+
+  $("#btnTestSync").addEventListener("click", function(){
+    var u = cleanSupabaseUrl($("#sb_url").value);
+    var k = ($("#sb_key").value || "").trim();
+    var resEl = $("#syncDiagResult");
+    resEl.style.display = "block";
+    if(!u || !/^https?:\/\//i.test(u)){
+      resEl.innerHTML = '<div class="note c"><b>❌ 專案網址格式錯誤：</b>請輸入正確的 URL，如 <code>https://xxxxxxxxxxxx.supabase.co</code>。</div>';
+      return;
+    }
+    if(!k || k.length < 20){
+      resEl.innerHTML = '<div class="note c"><b>❌ API 金鑰格式錯誤：</b>請輸入完整的 anon / public 金鑰（以 eyJ... 開頭的長字串）。</div>';
+      return;
+    }
+    resEl.innerHTML = '<div class="note t"><b>⏳ 正在診斷連線...</b><br>測試 1：檢查專案網址與連線 ➔ 測試 2：驗證 anon 金鑰 ➔ 測試 3：檢測 ep_pull/ep_push 函式...</div>';
+
+    fetch(u + "/rest/v1/", {
+      method: "GET",
+      headers: { "apikey": k, "Authorization": "Bearer " + k }
+    }).then(function(r){
+      if(r.status === 401){
+        throw new Error("anon 金鑰無效 (HTTP 401 Unauthorized)。請確認複製的是 Project API Keys 中的 anon / public 金鑰，非打錯字。");
+      }
+      if(!r.ok && r.status !== 200){
+        throw new Error("伺服器回應異常 (HTTP " + r.status + ")。請登入 Supabase 確認專案未處於 Paused 休眠狀態。");
+      }
+      return rpc("ep_pull", { p_key: "0123456789abcdef0123456789abcdef" }, { u: u, k: k });
+    }).then(function(doc){
+      resEl.innerHTML =
+        '<div class="note g">'+
+          '<b>🎉 連線診斷 100% 成功！</b><br>'+
+          '✓ Supabase 伺服器連線正常<br>'+
+          '✓ anon / public 金鑰驗證通過<br>'+
+          '✓ ep_pull 與 ep_push 遠端同步函式已就緒<br>'+
+          '<div style="margin-top:8px"><button class="btn pri sm" id="btnGenSyncFromDiag" type="button">⚡ 立即產生同步碼並啟用</button></div>'+
+        '</div>';
+      var diagBtn = $("#btnGenSyncFromDiag");
+      if(diagBtn) diagBtn.addEventListener("click", function(){ $("#btnGenSync").click(); });
+    }).catch(function(err){
+      resEl.innerHTML =
+        '<div class="note c">'+
+          '<b>❌ 連線診斷未通過：</b><br>'+
+          esc(err.message)+
+          '<div class="small" style="margin-top:6px">建議排查：若提示找不到函式，請點擊上方<b>「📋 複製完整 SQL 語法」</b>至 Supabase SQL Editor 執行；若提示連線失敗，請至 Supabase 確認專案狀態是否正常。</div>'+
+        '</div>';
+    });
+  });
+
   $("#btnGenSync").addEventListener("click", function(){
     var u = cleanSupabaseUrl($("#sb_url").value);
     var k = ($("#sb_key").value || "").trim();
