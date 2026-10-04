@@ -715,12 +715,13 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     <div class="sec">
       <div class="sec-head"><h2>雲端同步</h2><span class="note-r">跨手機 / 電腦共用同一份紀錄</span></div>
       <div class="card pad">
-        <div class="note t" style="margin-bottom:14px">
-          <b>為什麼要貼「同步碼」而不是寫在網站裡：</b>這個網站的原始碼是公開的。連線金鑰若寫死在檔案裡，任何人都能讀寫你的紀錄。因此金鑰只存在你自己的瀏覽器，貼一次即可，換裝置再貼一次。
+        <div class="note g" style="margin-bottom:14px">
+          <b>⚡ Cloudflare D1 邊緣資料庫（已就緒）：</b>
+          本專案已遷移至 Cloudflare D1 資料庫（<code>energy-plan-db</code>）。若經由 Cloudflare 部署網址造訪，系統會<b>全自動雙向高速同步</b>，無須任何複雜金鑰！若在其他網域造訪，只需貼上 Cloudflare 部署網址按「啟用同步」即可。
         </div>
         <label class="field">
-          <span>同步碼 <em>一段長字串，貼上後按啟用</em></span>
-          <textarea class="inp" id="s_code" placeholder="貼上同步碼…" style="font-family:var(--mono);font-size:12px;min-height:76px"></textarea>
+          <span>同步碼 或 Cloudflare 網址 <em>支援 Cloudflare 網址、JSON 或舊版同步碼</em></span>
+          <textarea class="inp" id="s_code" placeholder="貼上 Cloudflare 部署網址（如 https://...）或同步碼…" style="font-family:var(--mono);font-size:12px;min-height:76px"></textarea>
         </label>
         <div class="btn-row">
           <button class="btn pri" id="applySync">啟用同步</button>
@@ -731,8 +732,8 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
         </div>
         <p class="small faint" id="syncStatus" style="margin-top:10px">—</p>
 
-        <details style="margin-top:14px;border:1px dashed var(--line);border-radius:var(--r-sm);padding:12px" id="sbSetupDetails" open>
-          <summary style="font-size:13px;font-weight:700;cursor:pointer;color:var(--teal)">📌 重新設定或診斷 Supabase 連線？點此展開專屬設定工具</summary>
+        <details style="margin-top:14px;border:1px dashed var(--line);border-radius:var(--r-sm);padding:12px" id="sbSetupDetails">
+          <summary style="font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)">🛠️ 備用：舊版 Supabase 連線設定（點此展開）</summary>
           <div style="margin-top:12px;display:grid;gap:12px">
             
             <div style="background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px">
@@ -1033,6 +1034,9 @@ function load(){
     var sc = localStorage.getItem(LS_SYNC);
     if(sc) SYNC = JSON.parse(sc);
   }catch(e){}
+  if(!SYNC && isCf()){
+    SYNC = { provider: "cloudflare", s: "default", endpoint: getCfEndpoint() };
+  }
   try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){}
 }
 function save(){
@@ -2447,12 +2451,34 @@ function b64d(s){ return decodeURIComponent(escape(atob(s))); }
 function syncBadge(cls, txt){
   var el=$("#syncDot"); el.className="sync-dot "+cls; $("#syncTxt").textContent=txt;
 }
+
+function isCf(){
+  if(SYNC && SYNC.provider === "cloudflare") return true;
+  if(location.hostname.indexOf("workers.dev")!==-1 || location.hostname.indexOf("pages.dev")!==-1) return true;
+  return false;
+}
+
+function getCfEndpoint(){
+  if(SYNC && SYNC.endpoint) return SYNC.endpoint.replace(/\/+$/,"");
+  if(location.hostname.indexOf("workers.dev")!==-1 || location.hostname.indexOf("pages.dev")!==-1) return "";
+  return "";
+}
+
 function renderSyncUI(){
   var st=$("#syncStatus");
-  if(!SYNC){
+  if(!SYNC && !isCf()){
     syncBadge("","本機");
     st.innerHTML='目前<b>只存在這台裝置的瀏覽器</b>。清除瀏覽器資料會遺失紀錄，建議至少定期匯出 JSON 備份。';
     $("#s_code").value="";
+    return;
+  }
+  if(isCf() || (SYNC && SYNC.provider === "cloudflare")){
+    var key = (SYNC && SYNC.s) || "default";
+    syncBadge("ok","Cloudflare D1");
+    var epDisplay = (SYNC && SYNC.endpoint) ? esc(SYNC.endpoint) : location.origin;
+    st.innerHTML='已連結 <b>Cloudflare D1 資料庫 (energy-plan-db)</b> · 空間金鑰 <b class="num">'+esc(key)+'</b> · 服務端點 <code>'+epDisplay+'</code>'+
+      (SYNC && SYNC.last? ' · 最後同步 '+new Date(SYNC.last).toLocaleString("zh-TW"):'');
+    if($("#s_code") && !$("#s_code").value) $("#s_code").value = (SYNC && SYNC.endpoint) ? SYNC.endpoint : (location.hostname.indexOf("github.io")===-1 ? location.origin : "");
     return;
   }
   syncBadge("ok","已同步");
@@ -2519,8 +2545,38 @@ function mergeDoc(remote){
   return changed;
 }
 function pull(silent){
-  if(!SYNC) return Promise.resolve();
+  if(!SYNC && !isCf()) return Promise.resolve();
   syncBadge("busy","同步中");
+
+  if(isCf() || (SYNC && SYNC.provider === "cloudflare")){
+    var ep = getCfEndpoint();
+    var key = (SYNC && SYNC.s) || "default";
+    return fetch(ep + "/api/pull?key=" + encodeURIComponent(key))
+      .then(function(r){
+        if(!r.ok) return r.text().then(function(t){ throw new Error("HTTP " + r.status + " " + t); });
+        return r.json();
+      })
+      .then(function(res){
+        var changed = false;
+        if(res.found && res.doc){
+          changed = mergeDoc(res.doc);
+        }
+        if(!SYNC) SYNC = { provider: "cloudflare", s: key, endpoint: ep };
+        SYNC.last = Date.now();
+        localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+        if(changed){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} renderAll(); }
+        syncBadge("ok","Cloudflare D1");
+        renderSyncUI();
+        if(!silent) toast(changed? "已從 Cloudflare D1 更新":"Cloudflare D1 已是最新");
+      }).catch(function(e){
+        syncBadge("err","同步失敗");
+        var st=$("#syncStatus"); if(st) st.innerHTML='<span style="color:var(--coral);font-weight:600">❌ Cloudflare D1 同步失敗：'+esc(e.message)+'</span>';
+        if(!silent) toast("拉取失敗："+e.message);
+        else console.warn("D1 pull failed", e);
+        throw e;
+      });
+  }
+
   return rpc("ep_pull", {p_key: SYNC.s}).then(function(doc){
     var changed = mergeDoc(doc);
     SYNC.last = Date.now(); localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
@@ -2537,13 +2593,39 @@ function pull(silent){
 }
 var pushTimer=null;
 function schedulePush(){
-  if(!SYNC) return;
+  if(!SYNC && !isCf()) return;
   clearTimeout(pushTimer);
   pushTimer=setTimeout(function(){ push(true); }, 1200);
 }
 function push(silent){
-  if(!SYNC) return Promise.resolve();
+  if(!SYNC && !isCf()) return Promise.resolve();
   syncBadge("busy","同步中");
+
+  if(isCf() || (SYNC && SYNC.provider === "cloudflare")){
+    var ep = getCfEndpoint();
+    var key = (SYNC && SYNC.s) || "default";
+    var payload = { key: key, doc: { profile: S.profile, days: S.days, weeks: S.weeks, ts: Date.now() } };
+    return fetch(ep + "/api/push", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      if(!r.ok) return r.text().then(function(t){ throw new Error("HTTP " + r.status + " " + t); });
+      return r.json();
+    }).then(function(){
+      if(!SYNC) SYNC = { provider: "cloudflare", s: key, endpoint: ep };
+      SYNC.last = Date.now();
+      localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+      syncBadge("ok","Cloudflare D1");
+      renderSyncUI();
+      if(!silent) toast("已同步至 Cloudflare D1");
+    }).catch(function(e){
+      syncBadge("err","同步失敗");
+      var st=$("#syncStatus"); if(st) st.innerHTML='<span style="color:var(--coral);font-weight:600">❌ Cloudflare D1 上傳失敗：'+esc(e.message)+'</span>';
+      if(!silent) toast("上傳失敗："+e.message); else console.warn("D1 push failed", e);
+    });
+  }
+
   return rpc("ep_push", {p_key: SYNC.s, p_doc:{profile:S.profile, days:S.days, weeks:S.weeks, ts:Date.now()}})
     .then(function(){
       SYNC.last=Date.now(); localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
@@ -2811,21 +2893,51 @@ function bind(){
   /* 同步 */
   $("#applySync").addEventListener("click", function(){
     var raw=$("#s_code").value.trim();
-    if(!raw){ toast("請先貼上同步碼"); return; }
+    if(!raw){ toast("請先貼上同步碼或 Cloudflare 網址"); return; }
+
+    if(/^https?:\/\//i.test(raw)){
+      var ep = raw.replace(/\/+$/, "");
+      SYNC = { provider: "cloudflare", endpoint: ep, s: "default", last: 0 };
+      localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+      renderSyncUI();
+      pull().then(function(){ return push(true); }).then(function(){ toast("Cloudflare D1 同步已啟用"); });
+      return;
+    }
+
     var o;
-    try{ o=JSON.parse(b64d(raw)); }catch(e){ toast("同步碼格式錯誤"); return; }
+    try{
+      if(raw.charAt(0)==="{"){
+        o = JSON.parse(raw);
+      } else {
+        o = JSON.parse(b64d(raw));
+      }
+    }catch(e){ toast("同步碼格式錯誤"); return; }
+
+    if(o.provider === "cloudflare"){
+      SYNC = { provider: "cloudflare", endpoint: o.endpoint||"", s: o.s||"default", last: 0 };
+      localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
+      renderSyncUI();
+      pull().then(function(){ return push(true); }).then(function(){ toast("Cloudflare D1 同步已啟用"); });
+      return;
+    }
+
     if(!o || !o.u || !o.k || !o.s || o.s.length<16){ toast("同步碼內容不完整"); return; }
     SYNC={u:cleanSupabaseUrl(o.u), k:String(o.k).trim(), s:String(o.s).trim(), last:0};
     localStorage.setItem(LS_SYNC, JSON.stringify(SYNC));
     renderSyncUI();
     pull().then(function(){ return push(true); }).then(function(){ toast("同步已啟用"); });
   });
-  $("#pullNow").addEventListener("click", function(){ if(!SYNC){ toast("尚未啟用同步"); return; } pull(); });
-  $("#pushNow").addEventListener("click", function(){ if(!SYNC){ toast("尚未啟用同步"); return; } push(); });
+  $("#pullNow").addEventListener("click", function(){ if(!SYNC && !isCf()){ toast("尚未啟用同步"); return; } pull(); });
+  $("#pushNow").addEventListener("click", function(){ if(!SYNC && !isCf()){ toast("尚未啟用同步"); return; } push(); });
   $("#copySync").addEventListener("click", function(){
-    if(!SYNC){ toast("尚未啟用同步"); return; }
-    var code=b64e(JSON.stringify({u:cleanSupabaseUrl(SYNC.u),k:SYNC.k,s:SYNC.s}));
-    $("#s_code").value=code;
+    if(!SYNC && !isCf()){ toast("尚未啟用同步"); return; }
+    var code = "";
+    if(isCf() || (SYNC && SYNC.provider === "cloudflare")){
+      code = JSON.stringify({ provider: "cloudflare", endpoint: getCfEndpoint() || location.origin, s: (SYNC && SYNC.s) || "default" });
+    } else {
+      code = b64e(JSON.stringify({ u: cleanSupabaseUrl(SYNC.u), k: SYNC.k, s: SYNC.s }));
+    }
+    $("#s_code").value = code;
     if(navigator.clipboard) navigator.clipboard.writeText(code).then(function(){ toast("同步碼已複製"); },
       function(){ toast("已填入欄位，請手動複製"); });
     else toast("已填入欄位，請手動複製");
