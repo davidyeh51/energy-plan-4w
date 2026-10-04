@@ -970,6 +970,25 @@ function load(){
       note: "米家八電極 S800 實測：去脂體重 60.8kg、骨骼肌 32.4kg、內臟脂肪等級 10.0、心率 93"
     };
   }
+  /* 預設納入 2026-10-04 米家八電極量測紀錄 */
+  if(!S.days["2026-10-04"]){
+    S.days["2026-10-04"] = {
+      type: "normal",
+      weight: 85.80,
+      bf: 29.8,
+      bmi: 26.5,
+      steps: 8500,
+      sleep: "23:15",
+      energy: 7,
+      kcalB: 450,
+      kcalL: 650,
+      kcalD: 700,
+      p: { b: true, l: true, d: true },
+      r: { water: true, no_sugar: true, lunch_half: true },
+      h: { walk: true, stretch: true },
+      note: "米家八電極 S800 實測：去脂體重 60.2kg、骨骼肌 32.2kg、內臟脂肪等級 11.0、心率 96"
+    };
+  }
   try{
     var sc = localStorage.getItem(LS_SYNC);
     if(sc) SYNC = JSON.parse(sc);
