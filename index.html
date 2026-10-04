@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>月度精力體態重塑 · 執行台</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230f8f70%22/%3E%3Cpath d=%22M17.5 5 8 18h6l-1.5 9L22 14h-6z%22 fill=%22%23f2ab2e%22/%3E%3C/svg%3E">
 <style>
@@ -382,6 +385,14 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
       <div class="grid g4" id="metricRow"></div>
     </div>
 
+    <div class="sec" id="secBodyCompSummary">
+      <div class="sec-head">
+        <h2>米家八電極身體成分分析（最新實測）</h2>
+        <span class="note-r" id="bodyCompDate">—</span>
+      </div>
+      <div class="card pad" id="bodyCompCard"></div>
+    </div>
+
     <div class="sec">
       <div class="sec-head">
         <h2>長期體態里程碑（2026Q4 → 2027Q1 → 2027Q2）</h2>
@@ -450,21 +461,39 @@ footer.foot .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
         <span class="note-r" id="dailyLbmHint">排尿後、空腹、同一機器量測</span>
       </div>
       <div class="card pad">
-        <div class="grid g3">
+        <div class="grid g3" style="margin-bottom:10px">
           <label class="field" style="margin:0">
             <span>晨起體重 <em>kg</em></span>
-            <input class="inp" type="number" step="0.1" min="30" max="200" id="f_weight" placeholder="—" inputmode="decimal">
+            <input class="inp" type="number" step="0.05" min="30" max="200" id="f_weight" placeholder="—" inputmode="decimal">
           </label>
           <label class="field" style="margin:0">
             <span>體脂率 <em>%</em></span>
             <input class="inp" type="number" step="0.1" min="3" max="60" id="f_bf" placeholder="—" inputmode="decimal">
           </label>
           <label class="field" style="margin:0">
-            <span>BMI 指數 <em>可自動或手動輸入</em></span>
+            <span>BMI 指數 <em>自動換算</em></span>
             <input class="inp" type="number" step="0.1" min="10" max="60" id="f_bmi" placeholder="—" inputmode="decimal">
           </label>
         </div>
-        <div id="dailyBodyCompBadge" style="margin-top:12px;font-size:12.5px" class="muted"></div>
+        <div class="grid g4">
+          <label class="field" style="margin:0">
+            <span>骨骼肌量 <em>kg · 米家S800</em></span>
+            <input class="inp" type="number" step="0.1" id="f_muscle_skeletal" placeholder="—" inputmode="decimal">
+          </label>
+          <label class="field" style="margin:0">
+            <span>內臟脂肪等級 <em>標準 1-9</em></span>
+            <input class="inp" type="number" step="0.5" id="f_visceral" placeholder="—" inputmode="decimal">
+          </label>
+          <label class="field" style="margin:0">
+            <span>身體水分 <em>kg</em></span>
+            <input class="inp" type="number" step="0.1" id="f_water" placeholder="—" inputmode="decimal">
+          </label>
+          <label class="field" style="margin:0">
+            <span>靜息心率 <em>bpm</em></span>
+            <input class="inp" type="number" step="1" id="f_heart_rate" placeholder="—" inputmode="numeric">
+          </label>
+        </div>
+        <div id="dailyBodyCompBadge" style="margin-top:14px;font-size:12.5px" class="muted"></div>
       </div>
     </div>
 
@@ -942,22 +971,27 @@ function load(){
   if(!S.profile) S.profile = blankProfile();
   if(!S.days) S.days = {};
   if(!S.weeks) S.weeks = {};
-  /* 自動平滑遷移至 2026-10-01 起始與 10/03 米家八電極數據 */
-  if(!S.profile.start || S.profile.start === "2026-08-18"){
+  /* 自動平滑遷移至 2026-10-01 起始與 10/03、10/04 米家八電極數據 */
+  if(!S.profile.start || S.profile.start < "2026-10-01"){
     S.profile.start = "2026-10-01";
-    if(!S.profile.weight) S.profile.weight = 85.65;
-    if(!S.profile.bf) S.profile.bf = 29.0;
-    if(!S.profile.height) S.profile.height = 180;
-    if(!S.profile.waist) S.profile.waist = 90;
-    if(!S.profile.baseSteps) S.profile.baseSteps = 6000;
+    S.profile.weight = 85.65;
+    S.profile.bf = 29.0;
+    S.profile.height = 180;
+    S.profile.waist = 90;
+    S.profile.baseSteps = 6000;
+    S.profile.ts = Date.now();
   }
   /* 預設納入 2026-10-03 米家八電極首日打卡紀錄 */
-  if(!S.days["2026-10-03"]){
-    S.days["2026-10-03"] = {
+  if(!S.days["2026-10-03"] || S.days["2026-10-03"].muscleSkeletal==null){
+    S.days["2026-10-03"] = Object.assign(S.days["2026-10-03"]||{}, {
       type: "normal",
       weight: 85.65,
       bf: 29.0,
       bmi: 26.4,
+      muscleSkeletal: 32.4,
+      visceral: 10.0,
+      water: 44.9,
+      heartRate: 93,
       steps: 8000,
       sleep: "23:00",
       energy: 7,
@@ -967,16 +1001,21 @@ function load(){
       p: { b: true, l: true, d: true },
       r: { water: true, no_sugar: true, lunch_half: true },
       h: { walk: true, stretch: true },
-      note: "米家八電極 S800 實測：去脂體重 60.8kg、骨骼肌 32.4kg、內臟脂肪等級 10.0、心率 93"
-    };
+      note: "米家八電極 S800：去脂體重 60.8kg、骨骼肌 32.4kg、內臟脂肪 10.0、水分 44.9kg",
+      ts: Date.now()
+    });
   }
   /* 預設納入 2026-10-04 米家八電極量測紀錄 */
-  if(!S.days["2026-10-04"]){
-    S.days["2026-10-04"] = {
+  if(!S.days["2026-10-04"] || S.days["2026-10-04"].muscleSkeletal==null){
+    S.days["2026-10-04"] = Object.assign(S.days["2026-10-04"]||{}, {
       type: "normal",
       weight: 85.80,
       bf: 29.8,
       bmi: 26.5,
+      muscleSkeletal: 32.2,
+      visceral: 11.0,
+      water: 44.4,
+      heartRate: 96,
       steps: 8500,
       sleep: "23:15",
       energy: 7,
@@ -986,13 +1025,15 @@ function load(){
       p: { b: true, l: true, d: true },
       r: { water: true, no_sugar: true, lunch_half: true },
       h: { walk: true, stretch: true },
-      note: "米家八電極 S800 實測：去脂體重 60.2kg、骨骼肌 32.2kg、內臟脂肪等級 11.0、心率 96"
-    };
+      note: "米家八電極 S800：去脂體重 60.2kg、骨骼肌 32.2kg、內臟脂肪 11.0、水分 44.4kg",
+      ts: Date.now()
+    });
   }
   try{
     var sc = localStorage.getItem(LS_SYNC);
     if(sc) SYNC = JSON.parse(sc);
   }catch(e){}
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){}
 }
 function save(){
   S.ts = Date.now();
@@ -1326,6 +1367,9 @@ function renderDash(){
     "減重期精力<b>不該</b>下降。持續掉 = 缺口過大"));
   $("#metricRow").innerHTML = mrow.join("");
 
+  /* --- 米家八電極身體成分分析卡 (S800 最新實測) --- */
+  renderBodyCompDashCard();
+
   /* --- 長期里程碑 (2026Q4 → 2027Q1 → 2027Q2) --- */
   renderMilestones(dv);
 
@@ -1394,6 +1438,83 @@ function deltaTxt(v,unit,d){
   var c = v<-0.05?"down":(v>0.05?"up":"flat");
   var s = v>0?"+":"";
   return '<span class="delta '+c+'">'+s+nf(v,d)+' '+unit+'</span>';
+}
+
+/* ---------- 米家八電極身體成分分析卡 (S800 最新實測) ---------- */
+function renderBodyCompDashCard(){
+  var host = $("#bodyCompCard"), dateEl = $("#bodyCompDate");
+  if(!host) return;
+
+  var dates = Object.keys(S.days).filter(function(k){
+    var d = S.days[k];
+    return d && d.weight!=null;
+  }).sort();
+
+  if(!dates.length){
+    host.innerHTML = '<div class="empty">尚無體態量測數據。請至「今日打卡」輸入體重與體脂率。</div>';
+    if(dateEl) dateEl.textContent = "—";
+    return;
+  }
+
+  var latestDt = dates[dates.length - 1];
+  var prevDt = dates.length > 1 ? dates[dates.length - 2] : null;
+  var d = S.days[latestDt] || {};
+  var p = prevDt ? S.days[prevDt] : null;
+
+  if(dateEl) dateEl.textContent = latestDt + " 量測 · 米家八電極 S800";
+
+  var lbm = (d.weight!=null && d.bf!=null) ? d.weight * (1 - d.bf/100) : null;
+  var guard = (S.profile && S.profile.weight && S.profile.bf) ? (S.profile.weight * (1 - S.profile.bf/100) * 0.98) : 59.6;
+  var lbmOk = lbm!=null ? lbm >= guard : true;
+
+  var dWeight = (p && p.weight!=null && d.weight!=null) ? (d.weight - p.weight) : null;
+  var dBf = (p && p.bf!=null && d.bf!=null) ? (d.bf - p.bf) : null;
+  var dWater = (p && p.water!=null && d.water!=null) ? (d.water - p.water) : null;
+
+  var cards = [];
+  cards.push(miniStatCard("晨起體重", (d.weight!=null? nf(d.weight,2):"—")+" kg",
+    dWeight!=null ? (dWeight>0? ("+"+nf(dWeight,2)+" kg (前日)"): (nf(dWeight,2)+" kg (前日)")) : "距Q4目標 84kg 還差 "+nf(Math.max(0, (d.weight||85.8)-84), 1)+"kg",
+    dWeight>0?"up":"down"));
+
+  cards.push(miniStatCard("體脂率", (d.bf!=null? nf(d.bf,1):"—")+" %",
+    dBf!=null ? (dBf>0? ("+"+nf(dBf,1)+"% (前日)") : (nf(dBf,1)+"% (前日)")) : "距Q4目標 26% 還差 "+nf(Math.max(0, (d.bf||29.8)-26), 1)+"%",
+    dBf>0?"up":"down"));
+
+  cards.push(miniStatCard("去脂體重 (LBM)", (lbm!=null? nf(lbm,1):"—")+" kg",
+    '護欄 ≥ '+nf(guard,1)+' kg · '+(lbmOk?'<span class="pill g">守住</span>':'<span class="pill c">跌破</span>'),
+    lbmOk?"ok":"warn"));
+
+  cards.push(miniStatCard("骨骼肌量", (d.muscleSkeletal!=null? nf(d.muscleSkeletal,1): (lbm? nf(lbm*0.53,1):"—"))+" kg",
+    "底子良好 · 支撐基礎代謝", "ok"));
+
+  cards.push(miniStatCard("內臟脂肪等級", (d.visceral!=null? nf(d.visceral,1):"11.0"),
+    (d.visceral&&d.visceral>9? '<span class="pill c">非常高 (警戒門檻 9)</span>' : '<span class="pill g">標準良好</span>'),
+    (d.visceral&&d.visceral>9?"warn":"ok")));
+
+  cards.push(miniStatCard("身體水分", (d.water!=null? nf(d.water,1):"—")+" kg",
+    dWater!=null? (dWater<0? (nf(dWater,1)+" kg · 阻抗虛高主因") : ("+"+nf(dWater,1)+" kg · 水分充足")) : "佔比 51.7%",
+    dWater<0?"warn":"ok"));
+
+  var coachNote = "";
+  if(latestDt === "2026-10-04" || (dWater!=null && dWater < -0.3)){
+    coachNote =
+      '<div class="note g" style="margin-top:14px;font-size:13px;line-height:1.6">'+
+      '<b>👨‍⚕️ 教練科學解讀（今日數據波動真相）：</b><br>'+
+      '• <b>體脂率跳升 0.8% 核心在於水分流失 0.5 kg</b>：八電極生物電阻抗依賴人體水分導電。水分減少使電阻增大，演算法自動將少掉的水分誤判為「脂肪增加與肌肉減少」。24 小時內絕不可能生成 0.8kg 純脂肪（需 6,000+ kcal 暴食），此為水分生理波動，請勿焦慮，持續關注 7 日均線！<br>'+
+      '• <b>內臟脂肪升至 11.0 級（警戒）</b>：內臟脂肪對酒精與高油高糖極敏感，但也最容易被消除。今日關鍵：<b>日行 8,500～10,000 步</b>（低強度快走優先氧化游離脂肪酸），晚餐澱粉減半，補充水分 2,000cc+。'+
+      '</div>';
+  }
+
+  host.innerHTML = '<div class="grid g3" style="gap:12px">' + cards.join("") + '</div>' + coachNote;
+}
+
+function miniStatCard(label, val, sub, tone){
+  var borderClr = tone==="warn" ? "var(--coral)" : tone==="ok" ? "var(--teal)" : "var(--line)";
+  return '<div style="background:var(--card-sub);border:1px solid '+borderClr+';border-radius:10px;padding:12px 14px">'+
+    '<div class="lab tiny muted" style="font-weight:700">'+esc(label)+'</div>'+
+    '<div class="num" style="font-size:22px;font-weight:700;margin:2px 0">'+esc(val)+'</div>'+
+    '<div class="tiny" style="color:var(--muted)">'+sub+'</div>'+
+    '</div>';
 }
 
 /* ---------- 三季度長期里程碑 (2026Q4 → 2027Q1 → 2027Q2) ---------- */
@@ -1800,6 +1921,10 @@ function renderBodyCompBadge(d, dv){
       }
     }
     if(curBmi!=null) parts.push('<span class="pill t">BMI '+curBmi+'</span>');
+    if(d.muscleSkeletal!=null) parts.push('<span class="pill t">骨骼肌 <b>'+nf(d.muscleSkeletal,1)+'</b> kg</span>');
+    if(d.visceral!=null) parts.push(d.visceral>9 ? '<span class="pill c">內臟脂肪 <b>'+nf(d.visceral,1)+'</b> · 偏高警戒</span>' : '<span class="pill g">內臟脂肪 <b>'+nf(d.visceral,1)+'</b> · 標準</span>');
+    if(d.water!=null) parts.push('<span class="pill n">水分 <b>'+nf(d.water,1)+'</b> kg</span>');
+    if(d.heartRate!=null) parts.push('<span class="pill n">心率 <b>'+d.heartRate+'</b> bpm</span>');
   } else if(d.weight!=null){
     if(curBmi!=null) parts.push('BMI <b class="num">'+curBmi+'</b>');
     parts.push('<span class="faint">填寫體脂率可自動推導每日瘦體重與護欄狀態</span>');
@@ -1904,6 +2029,10 @@ function renderDaily(){
   } else {
     $("#f_bmi").value = "";
   }
+  $("#f_muscle_skeletal").value = d.muscleSkeletal!=null? d.muscleSkeletal : "";
+  $("#f_visceral").value        = d.visceral!=null? d.visceral : "";
+  $("#f_water").value           = d.water!=null? d.water : "";
+  $("#f_heart_rate").value      = d.heartRate!=null? d.heartRate : "";
   renderBodyCompBadge(d, dv);
 
   /* 日常指標 */
@@ -2375,7 +2504,12 @@ function rpc(fn, body, customAuth){
 function mergeDoc(remote){
   if(!remote || typeof remote!=="object") return false;
   var changed=false, k;
-  if(remote.profile && (remote.profile.ts||0) > (S.profile.ts||0)){ S.profile=remote.profile; changed=true; }
+  /* 安全防護：若雲端是舊計畫（早於 2026-10-01），不可倒灌洗掉本地新月度計畫 */
+  if(remote.profile && (!remote.profile.start || remote.profile.start < "2026-10-01")){
+    schedulePush();
+  } else if(remote.profile && (remote.profile.ts||0) > (S.profile.ts||0)){
+    S.profile=remote.profile; changed=true;
+  }
   if(remote.days) for(k in remote.days){ if(!remote.days.hasOwnProperty(k)) continue;
     var a=S.days[k], b=remote.days[k];
     if(!a || (b.ts||0) > (a.ts||0)){ S.days[k]=b; changed=true; } }
@@ -2438,7 +2572,7 @@ function csvCell(v){
 }
 function exportDaysCsv(){
   var dv = D();
-  var head=["日期","週次","星期","日型態","晨起體重kg","體脂率%","BMI","步數","入睡時間","精力",
+  var head=["日期","週次","星期","日型態","晨起體重kg","體脂率%","BMI","骨骼肌kg","內臟脂肪","身體水分kg","心率bpm","步數","入睡時間","精力",
             "早餐kcal","午餐kcal","晚餐kcal","點心kcal","MFP總攝取kcal","MFP實測缺口kcal",
             "蛋白早","蛋白午","蛋白晚","蛋白補","規則1","規則2","規則3",
             "訓練","入睡達標","咖啡因15前","睡前3hr無酒","估計缺口kcal","依從度","備註"];
@@ -2451,7 +2585,7 @@ function exportDaysCsv(){
     var mfpDef = (hasMfp && dv && dv.tdee) ? Math.round(dv.tdee - mfpTot + (c.neat||0)) : "";
     var curBmi = d.bmi!=null? d.bmi : (d.weight!=null && S.profile && S.profile.height ? r1(d.weight / Math.pow(S.profile.height/100, 2)) : "");
     rows.push([dt, "W"+weekOf(dt), "週"+WD[wdOf(dt)], d.type==="social"?"應酬日":"平日",
-      d.weight, d.bf, curBmi, d.steps, d.sleep, d.energy,
+      d.weight, d.bf, curBmi, d.muscleSkeletal, d.visceral, d.water, d.heartRate, d.steps, d.sleep, d.energy,
       d.kcalB, d.kcalL, d.kcalD, d.kcalS, mfpTot, mfpDef,
       yn(d.p&&d.p.b), yn(d.p&&d.p.l), yn(d.p&&d.p.d), yn(d.p&&d.p.x),
       yn(d.r&&d.r[list[0].id]), yn(d.r&&d.r[list[1].id]), yn(d.r&&d.r[list[2].id]),
@@ -2546,13 +2680,18 @@ function bind(){
   }
 
   /* 體態指標即時監聽與存檔 */
-  ["#f_weight", "#f_bf", "#f_bmi"].forEach(function(sel){
+  ["#f_weight", "#f_bf", "#f_bmi", "#f_muscle_skeletal", "#f_visceral", "#f_water", "#f_heart_rate"].forEach(function(sel){
     $(sel).addEventListener("input", function(){
       var w = $("#f_weight").value.trim(), b = $("#f_bf").value.trim(), m = $("#f_bmi").value.trim();
+      var ms = $("#f_muscle_skeletal").value.trim(), visc = $("#f_visceral").value.trim(), wat = $("#f_water").value.trim(), hr = $("#f_heart_rate").value.trim();
       var tempD = {
         weight: w==="" ? null : parseFloat(w),
         bf: b==="" ? null : parseFloat(b),
-        bmi: m==="" ? null : parseFloat(m)
+        bmi: m==="" ? null : parseFloat(m),
+        muscleSkeletal: ms==="" ? null : parseFloat(ms),
+        visceral: visc==="" ? null : parseFloat(visc),
+        water: wat==="" ? null : parseFloat(wat),
+        heartRate: hr==="" ? null : Math.round(parseFloat(hr))
       };
       renderBodyCompBadge(tempD, D());
     });
@@ -2570,6 +2709,10 @@ function bind(){
   });
   numField("#f_bf", "bf", parseFloat);
   numField("#f_bmi", "bmi", parseFloat);
+  numField("#f_muscle_skeletal", "muscleSkeletal", parseFloat);
+  numField("#f_visceral", "visceral", parseFloat);
+  numField("#f_water", "water", parseFloat);
+  numField("#f_heart_rate", "heartRate", function(v){ return Math.round(parseFloat(v)); });
   numField("#f_steps", "steps", function(v){ return Math.round(parseFloat(v)); });
 
   /* MyFitnessPal 餐食熱量即時計算與存檔 */
@@ -2614,6 +2757,10 @@ function bind(){
     d.weight = parseNum("#f_weight", true);
     d.bf     = parseNum("#f_bf", true);
     d.bmi    = parseNum("#f_bmi", true);
+    d.muscleSkeletal = parseNum("#f_muscle_skeletal", true);
+    d.visceral       = parseNum("#f_visceral", true);
+    d.water          = parseNum("#f_water", true);
+    d.heartRate      = parseNum("#f_heart_rate", false);
     d.steps  = parseNum("#f_steps", false);
     d.kcalB  = parseNum("#f_kcal_b", false);
     d.kcalL  = parseNum("#f_kcal_l", false);
